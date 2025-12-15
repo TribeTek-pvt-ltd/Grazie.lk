@@ -1,0 +1,63 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap");
+@import "tailwindcss";
+
+/* 🔹 Tailwind v4 theme definition */
+@theme {
+  /* Colors */
+  --color-base: #ded3bf;
+  --color-soft: #f7f4ee;
+  --color-accent: #9a8f7a;
+  --color-dark: #3b3328;
+  --color-gold: #b89b5e;
+
+  /* Fonts */
+  --font-heading: "Playfair Display", serif;
+  --font-body: "Inter", sans-serif;
+}
+
+
+/* Base typography */
+body {
+  @apply bg-base text-dark;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6,
+.section-title {
+  font-family: var(--font-heading);
+  color: var(--color-dark);
+  letter-spacing: 0.02em;
+}
+
+/* Heading sizes */
+h1 {
+  @apply text-5xl md:text-6xl font-semibold;
+}
+
+h2 {
+  @apply text-4xl md:text-5xl font-semibold;
+}
+
+h3 {
+  @apply text-2xl md:text-3xl font-medium;
+}
+
+h4 {
+  @apply text-xl font-medium;
+}
+
+/* Paragraphs */
+p {
+  color: var(--color-accent);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+/* Small text */
+small {
+  color: var(--color-accent);
+  font-size: 0.875rem;
+}

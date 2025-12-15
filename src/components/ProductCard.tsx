@@ -1,0 +1,76 @@
+import Link from "next/link";
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  category: string;
+  image: string;
+  description: string;
+}
+
+export default function ProductCard({ product }: { product: Product }) {
+  const whatsappLink = `https://wa.me/947XXXXXXXX?text=I want to order ${encodeURIComponent(
+    product.name
+  )}`;
+
+  return (
+    <div className="group relative bg-soft overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 ease-in-out  hover:border-gold w-full">
+      {/* Image with responsive aspect ratio */}
+      <div className="w-full overflow-hidden relative" style={{ paddingTop: "70%" }}>
+        <img
+          src={product.image}
+          alt={product.name}
+          className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
+      </div>
+
+      {/* Content */}
+      <div className="p-4 sm:p-5 md:p-6">
+        {/* Product Name */}
+        <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-dark font-heading mb-1 tracking-wide">
+          {product.name}
+        </h3>
+
+        {/* Category */}
+        <p className="text-accent text-xs sm:text-sm mb-2 uppercase tracking-wide font-medium">
+          {product.category}
+        </p>
+
+        {/* Subtle gold divider */}
+        <div className="w-10 h-px bg-gold mb-3"></div>
+
+        {/* Price */}
+        <p className="text-base sm:text-lg md:text-xl text-accent mb-3 font-medium">
+          Rs. {product.price.toLocaleString()}
+        </p>
+
+        {/* Description */}
+        <p className="text-accent text-xs sm:text-sm md:text-sm mb-4 line-clamp-2">
+          {product.description}
+        </p>
+
+        {/* Buttons */}
+        <div className=" items-center flex flex-col sm:flex-row gap-3">
+          <Link
+            href={`/products/${product.id}`}
+            className="flex-1 text-center py-2 px-4 border border-gold text-dark font-medium rounded-lg hover:bg-gold hover:text-soft transition-colors duration-300"
+          >
+            View Details
+          </Link>
+          <a
+            href={whatsappLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 text-center py-2 px-4 bg-gold text-soft font-semibold rounded-lg hover:bg-dark hover:text-soft transition-colors duration-300 shadow-md"
+          >
+            Order via WhatsApp
+          </a>
+        </div>
+      </div>
+
+      {/* Optional subtle overlay on hover */}
+      <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-10 bg-dark transition-opacity duration-500"></div>
+    </div>
+  );
+}
