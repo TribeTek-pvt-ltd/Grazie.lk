@@ -68,8 +68,6 @@ ${itemsList}
 Total Items: ${itemCount}
 Grand Total: Rs. ${subtotal.toLocaleString()}
 
-Please confirm availability and delivery details.
-Thank you for your devotion ✨
     `.trim();
   };
 

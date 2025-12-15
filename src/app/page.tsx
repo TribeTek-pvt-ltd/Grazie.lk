@@ -28,7 +28,7 @@ export default function HomePage() {
       <div className="text-center mt-12">
         <Link
           href="/products"
-          className="px-8 py-3 border border-dark text-dark rounded-full hover:bg-dark hover:text-soft transition"
+          className="px-8 py-3 border border-dark text-dark rounded-xl hover:bg-dark hover:text-soft transition"
         >
           View All
         </Link>

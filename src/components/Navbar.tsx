@@ -67,20 +67,20 @@ export default function Navbar() {
     </span>
   )}
 </Link>
-
-
-        </div>
-
-         {/* WhatsApp CTA Button */}
+{/* WhatsApp CTA Button */}
           <a
             href="https://wa.me/947XXXXXXXXX" // Update with your number
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-gold text-soft px-5 py-2.5 rounded-full font-semibold hover:bg-dark hover:text-soft transition shadow-md"
+            className="flex items-center gap-2 bg-gold text-soft px-5 py-2.5 rounded-xl font-semibold hover:bg-dark hover:text-soft transition shadow-md"
           >
             <WhatsAppIcon />
             Contact Us
           </a>
+
+
+        </div>
+
 
         {/* Mobile Menu Button */}
         <button

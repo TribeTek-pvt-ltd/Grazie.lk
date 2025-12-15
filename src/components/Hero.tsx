@@ -25,13 +25,13 @@ export default function Hero() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             href="/products"
-            className="px-10 py-4 bg-dark text-soft rounded-full font-medium text-lg hover:bg-black transition"
+            className="px-10 py-4 bg-dark text-soft rounded-xl font-medium text-lg hover:bg-black transition"
           >
             Shop Now
           </Link>
           <Link
             href="/contact"
-            className="px-10 py-4 border border-dark text-dark rounded-full font-medium text-lg hover:bg-dark hover:text-soft transition"
+            className="px-10 py-4 border border-dark text-dark rounded-xl font-medium text-lg hover:bg-dark hover:text-soft transition"
           >
             Contact Us
           </Link>

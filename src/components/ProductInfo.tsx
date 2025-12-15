@@ -1,12 +1,13 @@
+// components/ProductDetail.tsx
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; // ← Import router
+import { useRouter } from "next/navigation";
 import OrderForm from "./OrderForm";
 import SizeChartModal from "./SizeChartModal";
-import { Truck, Package, Link2, ShoppingCart } from "lucide-react";
+import { Truck, Package, Link2, ShoppingCart, X } from "lucide-react";
 
 interface Product {
   id: number;
@@ -27,39 +28,26 @@ interface Product {
 }
 
 export default function ProductDetail({ product }: { product: Product }) {
-  const [showOrderForm, setShowOrderForm] = useState(false);
+  const [showOrderModal, setShowOrderModal] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [stock, setStock] = useState(product.stock);
   const [showSizeChart, setShowSizeChart] = useState(false);
-  const orderFormRef = useRef<HTMLDivElement>(null);
-  const router = useRouter(); // ← For navigation
-
-  const handleOrderNow = () => {
-    setShowOrderForm(true);
-    setTimeout(() => {
-      orderFormRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 100);
-  };
+  const router = useRouter();
 
   const handleAddToCart = () => {
     if (stock <= 0) return;
 
-    // Load current cart from localStorage
     const existingCart = JSON.parse(localStorage.getItem("grazieCart") || "[]");
-
-    // Check if product already in cart
     const existingItem = existingCart.find((item: any) => item.id === product.id);
 
     let updatedCart;
     if (existingItem) {
-      // Increase quantity
       updatedCart = existingCart.map((item: any) =>
         item.id === product.id
           ? { ...item, quantity: item.quantity + 1 }
           : item
       );
     } else {
-      // Add new item
       updatedCart = [
         ...existingCart,
         {
@@ -73,14 +61,9 @@ export default function ProductDetail({ product }: { product: Product }) {
       ];
     }
 
-    // Save back to localStorage
     localStorage.setItem("grazieCart", JSON.stringify(updatedCart));
-
-    // Update UI state
     setCartCount(cartCount + 1);
     setStock(stock - 1);
-
-    // Redirect to cart page immediately
     router.push("/cart");
   };
 
@@ -105,7 +88,7 @@ export default function ProductDetail({ product }: { product: Product }) {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Product Image */}
-          <div className="relative aspect-[3/4] overflow-hidden rounded-3xl shadow-2xl group">
+          <div className="relative aspect-[3/4] overflow-hidden  group">
             <Image
               src={product.image}
               alt={product.name}
@@ -184,7 +167,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                 <button
                   onClick={handleAddToCart}
                   disabled={!inStock}
-                  className={`flex-1 flex items-center justify-center gap-3 py-5 px-8 rounded-2xl font-semibold text-lg transition-all duration-300 shadow-xl ${
+                  className={`flex-1 flex items-center justify-center gap-3 py-5 px-8 rounded-xl font-semibold text-lg transition-all duration-300 shadow-xl ${
                     inStock
                       ? "bg-dark text-soft hover:bg-gold hover:text-soft"
                       : "bg-accent/20 text-accent/50 cursor-not-allowed"
@@ -194,17 +177,15 @@ export default function ProductDetail({ product }: { product: Product }) {
                   Add to Cart
                 </button>
 
-                {!showOrderForm && (
-                  <button
-                    onClick={handleOrderNow}
-                    className="flex-1 flex items-center justify-center gap-3 bg-gold text-soft py-5 px-8 rounded-2xl font-bold text-lg shadow-2xl hover:bg-dark hover:shadow-3xl transition-all duration-500"
-                  >
-                    🪔 Order Now
-                  </button>
-                )}
+                <button
+                  onClick={() => setShowOrderModal(true)}
+                  className="flex-1 flex items-center justify-center gap-3 bg-gold text-soft py-5 px-8 rounded-xl font-bold text-lg shadow-2xl hover:bg-dark hover:shadow-3xl transition-all duration-500"
+                >
+                  🪔 Order Now
+                </button>
               </div>
 
-              {/* Copy Link - Aligned to the right */}
+              {/* Copy Link */}
               <div className="flex justify-end">
                 <button
                   onClick={handleCopyLink}
@@ -215,17 +196,6 @@ export default function ProductDetail({ product }: { product: Product }) {
                 </button>
               </div>
             </div>
-
-            {/* Order Form */}
-            {showOrderForm && (
-              <div ref={orderFormRef} className="animate-fadeIn">
-                <OrderForm
-                  productName={product.name}
-                  productPrice={product.price}
-                  productCategory={product.category}
-                />
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -244,19 +214,44 @@ export default function ProductDetail({ product }: { product: Product }) {
         </div>
       )}
 
+      {/* Order Form Popup Modal */}
+      {showOrderModal && (
+        <div
+          className="fixed inset-0 bg-dark/70 backdrop-blur-md z-50 flex items-center justify-center p-4"
+          onClick={() => setShowOrderModal(false)}
+        >
+          <div
+            className="bg-soft shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowOrderModal(false)}
+              className="absolute top-6 right-6 text-dark/60 hover:text-dark transition z-10"
+              aria-label="Close order form"
+            >
+              <X size={28} />
+            </button>
+
+            {/* Form Content */}
+            <div className="p-8 md:p-12">
+              <h2 className="text-3xl md:text-4xl font-heading font-semibold text-dark mb-8 text-center">
+                Order with Devotion
+              </h2>
+              <OrderForm
+                productName={product.name}
+                productPrice={product.price}
+                productCategory={product.category}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Size Chart Modal */}
       {showSizeChart && product.sizes && (
         <SizeChartModal sizes={product.sizes} onClose={() => setShowSizeChart(false)} />
       )}
-
-      {/* Fade Animation */}
-      <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeIn { animation: fadeIn 0.8s ease-out forwards; }
-      `}</style>
     </div>
   );
 }
