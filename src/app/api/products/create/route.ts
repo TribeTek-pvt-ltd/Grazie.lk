@@ -121,7 +121,6 @@
 //   }
 // }
 
-
 // src/api/products/create/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseServer } from "@/src/lib/supabaseServer";
@@ -129,7 +128,7 @@ import { verifyAdminApi } from "@/src/lib/apiAdminAuth";
 
 export async function POST(req: NextRequest) {
   /* ---------- AUTH CHECK ---------- */
-  if (!verifyAdminApi(req)) {
+  if (!(await verifyAdminApi(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -146,8 +145,6 @@ export async function POST(req: NextRequest) {
 
     const price = Number(priceRaw);
     const stock = Number(stockRaw);
-
-    console.log({ name, description, priceRaw, stockRaw, imageBlob });
 
     /* ---------- VALIDATION ---------- */
     if (!name || !description || !priceRaw || !stockRaw) {
@@ -167,29 +164,40 @@ export async function POST(req: NextRequest) {
     }
 
     /* ---------- IMAGE UPLOAD ---------- */
-    // Give a fallback filename because Blob may not have name
-    const fileName = (imageBlob as any)?.name || `product-${Date.now()}.png`;
+    const fileName =
+      (imageBlob as any)?.name || `product-${Date.now()}.png`;
+
     const filePath = `products/${Date.now()}-${fileName}`;
-    console.log("Uploading to:", filePath);
+
+    const buffer = Buffer.from(await imageBlob.arrayBuffer());
 
     const { error: uploadError } = await supabaseServer.storage
       .from("products")
-      .upload(filePath, imageBlob, { contentType: imageBlob.type });
-       console.log("Uploading to:", uploadError);
+      .upload(filePath, buffer, {
+        contentType: imageBlob.type,
+        upsert: false,
+      });
 
     if (uploadError) {
+      console.error("Upload error:", uploadError);
       return NextResponse.json({ error: uploadError.message }, { status: 400 });
     }
 
     const { data: urlData } = supabaseServer.storage
       .from("products")
       .getPublicUrl(filePath);
-    console.log("Image URL:", urlData.publicUrl);
 
     /* ---------- PRODUCT INSERT ---------- */
     const { data: product, error: productError } = await supabaseServer
       .from("products")
-      .insert({ name, description, price, category, material, stock })
+      .insert({
+        name,
+        description,
+        price,
+        category,
+        material,
+        stock,
+      })
       .select()
       .single();
 
@@ -200,7 +208,10 @@ export async function POST(req: NextRequest) {
     /* ---------- IMAGE INSERT ---------- */
     const { error: imageError } = await supabaseServer
       .from("product_images")
-      .insert({ product_id: product.id, image_url: urlData.publicUrl });
+      .insert({
+        product_id: product.id,
+        image_url: urlData.publicUrl,
+      });
 
     if (imageError) {
       return NextResponse.json({ error: imageError.message }, { status: 400 });
@@ -209,6 +220,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Create product error:", err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
