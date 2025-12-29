@@ -1,24 +1,23 @@
 // src/app/admin/layout.tsx
 import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
 import AdminNavbar from "@/src/components/AdminNavbar";
 import { redirect } from "next/navigation";
+import { createSupabaseServerClient } from "@/src/lib/supabaseAuth";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  // Get the token from cookies
-  const token = (await cookies()).get("adminToken")?.value;
+  // Create Supabase client and check session
+  const supabase = await createSupabaseServerClient();
+  const { data: { session }, error } = await supabase.auth.getSession();
 
-  // Verify token
-  if (!token) {
-    // No token -> redirect to login
-    redirect("/admin/login");
-  } else {
-    try {
-      jwt.verify(token, process.env.JWT_SECRET!);
-    } catch (err) {
-      console.log("Invalid JWT:", err);
-      redirect("/admin/login");
-    }
+  // No session -> redirect to login
+  if (!session || error) {
+    redirect("/login");
+  }
+
+  // Verify user has admin role
+  const user = session.user;
+  if (user.user_metadata?.role !== 'admin') {
+    redirect("/login");
   }
 
   return (
@@ -41,3 +40,4 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     </div>
   );
 }
+

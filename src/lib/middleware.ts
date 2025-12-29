@@ -1,12 +1,12 @@
 // src/lib/middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
+import { createServerClient } from '@supabase/ssr';
 
 // Admin UI pages only
 const ADMIN_PAGES = ["/admin"];
 
-export function adminAuthMiddleware(req: NextRequest) {
+export async function adminAuthMiddleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Allow public & system paths
@@ -28,17 +28,40 @@ export function adminAuthMiddleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Validate admin JWT
-  const token = req.cookies.get("adminToken")?.value;
-  if (!token) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
+  // Create Supabase client for middleware
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return req.cookies.getAll().map(cookie => ({
+            name: cookie.name,
+            value: cookie.value,
+          }));
+        },
+        setAll(cookiesToSet) {
+          // Not needed for middleware
+        },
+      },
+    }
+  );
 
   try {
-    jwt.verify(token, process.env.JWT_SECRET!);
+    const { data: { session }, error } = await supabase.auth.getSession();
+
+    if (!session || error) {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
+
+    // Verify admin role
+    if (session.user.user_metadata?.role !== 'admin') {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
+
     return NextResponse.next();
   } catch (err) {
-    console.error("JWT verification failed:", err);
+    console.error("Middleware auth error:", err);
     return NextResponse.redirect(new URL("/login", req.url));
   }
 }
@@ -47,3 +70,4 @@ export function adminAuthMiddleware(req: NextRequest) {
 export const config = {
   matcher: ["/admin/:path*", "/admin"],
 };
+

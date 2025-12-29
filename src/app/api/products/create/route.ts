@@ -128,7 +128,8 @@ import { verifyAdminApi } from "@/src/lib/apiAdminAuth";
 
 export async function POST(req: NextRequest) {
   /* ---------- AUTH CHECK ---------- */
-  if (!(await verifyAdminApi(req))) {
+  const adminUser = await verifyAdminApi(req);
+  if (!adminUser) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -172,7 +173,7 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(await imageBlob.arrayBuffer());
 
     const { error: uploadError } = await supabaseServer.storage
-      .from("products")
+      .from("Grazie")
       .upload(filePath, buffer, {
         contentType: imageBlob.type,
         upsert: false,
@@ -184,7 +185,7 @@ export async function POST(req: NextRequest) {
     }
 
     const { data: urlData } = supabaseServer.storage
-      .from("products")
+      .from("Grazie")
       .getPublicUrl(filePath);
 
     /* ---------- PRODUCT INSERT ---------- */
@@ -207,10 +208,10 @@ export async function POST(req: NextRequest) {
 
     /* ---------- IMAGE INSERT ---------- */
     const { error: imageError } = await supabaseServer
-      .from("product_images")
+      .from("images")
       .insert({
         product_id: product.id,
-        image_url: urlData.publicUrl,
+        image_url: [urlData.publicUrl], // Wrap in array since column is ARRAY type
       });
 
     if (imageError) {

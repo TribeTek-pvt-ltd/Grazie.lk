@@ -1,25 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
 import { supabaseServer } from "@/src/lib/supabaseServer";
+import { verifyAdminApi } from "@/src/lib/apiAdminAuth";
 
 export async function GET(req: NextRequest) {
   /* -----------------------------------------
-     1. Read admin token from cookie
+     1. Verify admin authentication
   ----------------------------------------- */
-  const token = req.cookies.get("adminToken")?.value;
-
-  if (!token) {
+  const adminUser = await verifyAdminApi(req);
+  if (!adminUser) {
     return NextResponse.json(
       { error: "Unauthorized" },
-      { status: 401 }
-    );
-  }
-
-  try {
-    jwt.verify(token, process.env.JWT_SECRET!);
-  } catch (err) {
-    return NextResponse.json(
-      { error: "Invalid token" },
       { status: 401 }
     );
   }
@@ -34,14 +24,16 @@ export async function GET(req: NextRequest) {
       name,
       description,
       price,
-      category,
-      material,
+      category_id,
+      material_id,
       stock,
-      product_images (
+      created_at,
+      images (
         id,
         image_url
       )
     `)
+    .order("created_at", { ascending: false });
 
   if (error) {
     return NextResponse.json(
@@ -50,5 +42,6 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  return NextResponse.json({ data });
+  return NextResponse.json({ products: data });
 }
+
