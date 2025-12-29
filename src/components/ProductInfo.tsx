@@ -108,11 +108,11 @@ export default function ProductDetail({ product }: { product: Product }) {
               </h1>
 
               <div className="flex flex-wrap gap-4 mb-8">
-                <span className="px-6 py-3 bg-gold/20 text-gold rounded-full text-sm font-medium border border-gold/40">
+                <span className="px-6 py-3 bg-gold/20 text-gold  text-sm font-medium border border-gold/40">
                   {product.category}
                 </span>
                 {product.material && (
-                  <span className="px-6 py-3 bg-accent/10 text-accent rounded-full text-sm font-medium">
+                  <span className="px-6 py-3 bg-accent/10 text-accent  text-sm font-medium">
                     {product.material}
                   </span>
                 )}
