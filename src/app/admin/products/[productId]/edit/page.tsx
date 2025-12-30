@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
+import { useRouter } from "next/navigation";
 import ProductForm from "@/src/components/ProductForm";
 import LoadingSpinner from "@/src/components/LoadingSpinner";
 
@@ -10,6 +11,7 @@ export default function EditProductPage({
   params: Promise<{ productId: string }>;
 }) {
   const { productId } = use(params);
+  const router = useRouter();
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -19,7 +21,7 @@ export default function EditProductPage({
         const res = await fetch(`/api/products/get/${productId}`);
         const result = await res.json();
         if (res.ok) {
-          setProduct(result.data);
+          setProduct(result);
         }
       } catch (err) {
         console.error("Error fetching product:", err);
@@ -41,6 +43,9 @@ export default function EditProductPage({
     if (!res.ok) {
       throw new Error(result.error || "Failed to update product");
     }
+
+    alert("Product updated successfully!");
+    router.push("/admin/products");
   };
 
   if (loading) return <LoadingSpinner text="Loading product details..." />;
@@ -58,7 +63,7 @@ export default function EditProductPage({
           description: product.description,
           price: product.price,
           stock: product.stock,
-          category: product.category_id,
+          category: product.category,
           material: product.material,
           delivey_days: product.delivey_days,
         }}

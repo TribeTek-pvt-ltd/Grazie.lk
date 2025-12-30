@@ -2,18 +2,19 @@ import Link from "next/link";
 import { Trash2 } from "lucide-react";
 
 interface Product {
-  id: string;
+  id: string | number;
   name: string;
   price: number;
-  category: string;
-  image: string[];
+  category?: string;
+  image?: string | string[];
+  images?: Array<{ image_url: string[] }>;
   description: string;
 }
 
 interface Props {
   product: Product;
   isAdmin?: boolean;
-  onDelete?: (id: string) => void;
+  onDelete?: (id: string | number) => void | Promise<void>;
 }
 
 export default function ProductCard({ product, isAdmin = false, onDelete }: Props) {
@@ -21,65 +22,84 @@ export default function ProductCard({ product, isAdmin = false, onDelete }: Prop
     product.name
   )}`;
 
+  // Determine the best image URL to show
+  let mainImageUrl = "/placeholder.png";
+  if (product.images && product.images.length > 0 && product.images[0].image_url?.[0]) {
+    mainImageUrl = product.images[0].image_url[0];
+  } else if (Array.isArray(product.image) && product.image.length > 0) {
+    mainImageUrl = product.image[0];
+  } else if (typeof product.image === "string") {
+    mainImageUrl = product.image;
+  }
+
   return (
-    <div className="group relative bg-soft overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 ease-in-out  hover:border-gold w-full">
+    <div className="group relative bg-soft overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 ease-in-out  hover:border-gold w-full flex flex-col h-full">
       {/* Image with responsive aspect ratio */}
-      <div className="w-full overflow-hidden relative" style={{ paddingTop: "70%" }}>
+      <Link href={isAdmin ? `/admin/products/${product.id}/edit` : `/products/${product.id}`} className="block w-full overflow-hidden relative" style={{ paddingTop: "70%" }}>
         <img
-          src={product.image?.[0] || "/placeholder.png"}
+          src={mainImageUrl}
           alt={product.name}
           className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
-      </div>
+      </Link>
 
       {/* Content */}
-      <div className="p-4 sm:p-5 md:p-6">
+      <div className="p-4 sm:p-5 md:p-6 flex-1 flex flex-col">
         {/* Product Name */}
-        <h3 className="text-base sm:text-lg md:text-2xl font-semibold text-dark font-heading mb-1 tracking-wide">
-          {product.name}
-        </h3>
+        <Link href={isAdmin ? `/admin/products/${product.id}/edit` : `/products/${product.id}`}>
+          <h3 className="text-base sm:text-lg md:text-xl font-semibold text-dark font-heading mb-1 tracking-wide line-clamp-1 hover:text-gold transition-colors">
+            {product.name}
+          </h3>
+        </Link>
 
         {/* Category */}
         <p className="text-accent text-xs sm:text-sm mb-2 uppercase tracking-wide font-medium">
-          {product.category}
+          {product.category || "General"}
         </p>
 
         {/* Subtle gold divider */}
         <div className="w-10 h-px bg-gold mb-3"></div>
 
         {/* Price */}
-        <p className="text-base sm:text-lg md:text-xl text-accent mb-3 font-medium">
+        <p className="text-base sm:text-lg md:text-xl text-accent mb-3 font-medium mt-auto">
           Rs. {product.price.toLocaleString()}
         </p>
 
 
         {/* Buttons */}
-        <div className="flex items-center gap-3">
-          <Link
-            href={`/products/${product.id}`}
-            className="flex-1 text-center py-1 px-4 border border-gold text-dark font-medium  hover:bg-gold hover:text-soft transition-colors duration-300"
-          >
-            View Product
-          </Link>
-
-          {/* ADMIN vs USER */}
+        <div className="flex flex-wrap items-center gap-2">
           {isAdmin ? (
-            <button
-              onClick={() => onDelete?.(product.id)}
-              className="flex-1 flex items-center justify-center gap-2 py-2 px-4 bg-red-600 text-white font-semibold hover:bg-red-700 transition shadow-md"
-            >
-              <Trash2 size={16} />
-              Delete
-            </button>
+            <>
+              <Link
+                href={`/admin/products/${product.id}/edit`}
+                className="flex-1 text-center py-2 px-2 bg-amber-50 text-amber-700 text-sm font-medium rounded hover:bg-amber-100 transition"
+              >
+                Edit
+              </Link>
+              <button
+                onClick={() => onDelete?.(product.id)}
+                className="p-2 bg-red-50 text-red-600 rounded hover:bg-red-100 transition"
+              >
+                <Trash2 size={18} />
+              </button>
+            </>
           ) : (
-            <a
-              href={whatsappLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 text-center py-2 px-4 bg-gold text-soft font-semibold hover:bg-dark transition shadow-md"
-            >
-              Order Now
-            </a>
+            <>
+              <Link
+                href={`/products/${product.id}`}
+                className="flex-1 text-center py-1 px-4 border border-gold text-dark font-medium  hover:bg-gold hover:text-soft transition-colors duration-300"
+              >
+                View
+              </Link>
+              <a
+                href={whatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 text-center py-2 px-4 bg-gold text-soft font-semibold hover:bg-dark transition shadow-md"
+              >
+                Order
+              </a>
+            </>
           )}
         </div>
       </div>

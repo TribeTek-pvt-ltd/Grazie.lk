@@ -48,7 +48,7 @@ export async function PUT(
         name,
         description,
         price,
-        category_id: category, // Using category_id as per schema
+        category: category,
         material,
         stock,
         delivey_days,

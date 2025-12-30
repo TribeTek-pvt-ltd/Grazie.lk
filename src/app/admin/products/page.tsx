@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Package, Plus, Search, Edit2, Trash2, Image as ImageIcon } from "lucide-react";
+import { Package, Plus, Search } from "lucide-react";
 import LoadingSpinner from "@/src/components/LoadingSpinner";
 import EmptyState from "@/src/components/EmptyState";
+import ProductCard from "@/src/components/ProductCard";
 
 interface Product {
   id: string;
@@ -42,7 +43,7 @@ export default function ProductsPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string | number) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
 
     try {
@@ -118,69 +119,14 @@ export default function ProductsPage() {
           />
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filteredProducts.map((product) => (
-            <div
+            <ProductCard
               key={product.id}
-              className="group bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 overflow-hidden"
-            >
-              {/* Product Image */}
-              <div className="h-48 bg-gradient-to-br from-amber-50 to-yellow-50 relative overflow-hidden">
-                {product.images && product.images.length > 0 && product.images[0].image_url[0] ? (
-                  <img
-                    src={product.images[0].image_url[0]}
-                    alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <ImageIcon className="w-16 h-16 text-amber-200" />
-                  </div>
-                )}
-                {/* Stock Badge */}
-                <div className="absolute top-3 right-3">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${product.stock > 10
-                    ? 'bg-green-100 text-green-700'
-                    : product.stock > 0
-                      ? 'bg-yellow-100 text-yellow-700'
-                      : 'bg-red-100 text-red-700'
-                    }`}>
-                    {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
-                  </span>
-                </div>
-              </div>
-
-              {/* Product Info */}
-              <div className="p-5">
-                <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1">{product.name}</h3>
-                <p className="text-sm text-gray-600 mb-4 line-clamp-2">{product.description}</p>
-
-                <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-100">
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Price</p>
-                    <p className="text-2xl font-bold text-gold">
-                      LKR {product.price.toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Actions */}
-                <div className="flex gap-2">
-                  <Link href={`/admin/products/${product.id}/edit`} className="flex-1">
-                    <button className="w-full bg-amber-50 text-amber-700 py-2 px-3 rounded-lg hover:bg-amber-100 transition flex items-center justify-center gap-2 text-sm font-medium">
-                      <Edit2 className="w-4 h-4" />
-                      Edit
-                    </button>
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(product.id)}
-                    className="bg-red-50 text-red-600 py-2 px-3 rounded-lg hover:bg-red-100 transition"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
+              product={product as any}
+              isAdmin={true}
+              onDelete={handleDelete}
+            />
           ))}
         </div>
       )}
