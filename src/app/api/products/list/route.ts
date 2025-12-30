@@ -24,18 +24,20 @@ export async function GET(req: NextRequest) {
       name,
       description,
       price,
-      category_id,
-      material_id,
+      category,
+      Category (id, Category),
+      material,
       stock,
-      created_at,
+      delivey_days,
       images (
         id,
         image_url
       )
     `)
-    .order("created_at", { ascending: false });
+    .order("id", { ascending: false });
 
   if (error) {
+    console.error("Fetch products error:", error);
     return NextResponse.json(
       { error: error.message },
       { status: 500 }

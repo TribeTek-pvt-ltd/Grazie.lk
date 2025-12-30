@@ -3,19 +3,28 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabaseServer } from "@/src/lib/supabaseServer";
 import { verifyAdminApi } from "@/src/lib/apiAdminAuth";
 
-// GET - Fetch all materials
+// GET - Fetch all materials from products table (since materials table no longer exists)
 export async function GET(req: NextRequest) {
     try {
         const { data, error } = await supabaseServer
-            .from("materials")
-            .select("*")
-            .order("name");
+            .from("products")
+            .select("material")
+            .not("material", "is", null);
 
         if (error) {
+            console.error("Fetch materials error:", error);
             return NextResponse.json({ error: error.message }, { status: 500 });
         }
 
-        return NextResponse.json({ data });
+        // Get unique materials and map to the format expected by the frontend
+        const uniqueMaterials = Array.from(new Set(data.map((p: any) => p.material)))
+            .filter(Boolean)
+            .map((name, index) => ({
+                id: String(index + 1),
+                name: name
+            }));
+
+        return NextResponse.json({ data: uniqueMaterials });
     } catch (err) {
         console.error("Fetch materials error:", err);
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });

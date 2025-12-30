@@ -2,18 +2,18 @@ import Link from "next/link";
 import { Trash2 } from "lucide-react";
 
 interface Product {
-  id: number;
+  id: string;
   name: string;
   price: number;
   category: string;
-  image: string;
+  image: string[];
   description: string;
 }
 
 interface Props {
   product: Product;
   isAdmin?: boolean;
-  onDelete?: (id: number) => void;
+  onDelete?: (id: string) => void;
 }
 
 export default function ProductCard({ product, isAdmin = false, onDelete }: Props) {
@@ -26,7 +26,7 @@ export default function ProductCard({ product, isAdmin = false, onDelete }: Prop
       {/* Image with responsive aspect ratio */}
       <div className="w-full overflow-hidden relative" style={{ paddingTop: "70%" }}>
         <img
-          src={product.image}
+          src={product.image?.[0] || "/placeholder.png"}
           alt={product.name}
           className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
@@ -35,7 +35,7 @@ export default function ProductCard({ product, isAdmin = false, onDelete }: Prop
       {/* Content */}
       <div className="p-4 sm:p-5 md:p-6">
         {/* Product Name */}
-<h3 className="text-base sm:text-lg md:text-2xl font-semibold text-dark font-heading mb-1 tracking-wide">
+        <h3 className="text-base sm:text-lg md:text-2xl font-semibold text-dark font-heading mb-1 tracking-wide">
           {product.name}
         </h3>
 
@@ -55,14 +55,14 @@ export default function ProductCard({ product, isAdmin = false, onDelete }: Prop
 
         {/* Buttons */}
         <div className="flex items-center gap-3">
-  <Link
-    href={`/products/${product.id}`}
-    className="flex-1 text-center py-1 px-4 border border-gold text-dark font-medium  hover:bg-gold hover:text-soft transition-colors duration-300"
-  >
-    View Product
-  </Link>
+          <Link
+            href={`/products/${product.id}`}
+            className="flex-1 text-center py-1 px-4 border border-gold text-dark font-medium  hover:bg-gold hover:text-soft transition-colors duration-300"
+          >
+            View Product
+          </Link>
 
-   {/* ADMIN vs USER */}
+          {/* ADMIN vs USER */}
           {isAdmin ? (
             <button
               onClick={() => onDelete?.(product.id)}

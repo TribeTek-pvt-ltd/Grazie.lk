@@ -142,10 +142,11 @@ export async function POST(req: NextRequest) {
     const stockRaw = formData.get("stock")?.toString();
     const category = formData.get("category")?.toString() || null;
     const material = formData.get("material")?.toString() || null;
-    const imageBlob = formData.get("image") as Blob | null;
+    const deliveyDaysRaw = formData.get("delivey_days")?.toString();
 
     const price = Number(priceRaw);
     const stock = Number(stockRaw);
+    const delivey_days = deliveyDaysRaw ? Number(deliveyDaysRaw) : null;
 
     /* ---------- VALIDATION ---------- */
     if (!name || !description || !priceRaw || !stockRaw) {
@@ -159,34 +160,41 @@ export async function POST(req: NextRequest) {
     if (isNaN(stock) || stock < 0) {
       return NextResponse.json({ error: "Invalid stock value" }, { status: 400 });
     }
+    /* ---------- IMAGES UPLOAD ---------- */
+    const imageFiles = formData.getAll("images") as File[];
 
-    if (!imageBlob) {
-      return NextResponse.json({ error: "Image is required" }, { status: 400 });
+    if (imageFiles.length === 0) {
+      return NextResponse.json({ error: "At least one image is required" }, { status: 400 });
     }
 
-    /* ---------- IMAGE UPLOAD ---------- */
-    const fileName =
-      (imageBlob as any)?.name || `product-${Date.now()}.png`;
+    const imageUrls: string[] = [];
 
-    const filePath = `products/${Date.now()}-${fileName}`;
+    for (const image of imageFiles) {
+      if (image.size === 0) continue; // Skip empty selections if any
 
-    const buffer = Buffer.from(await imageBlob.arrayBuffer());
+      const fileName = (image as any).name || `product-${Date.now()}.png`;
+      const filePath = `product/${Date.now()}-${fileName}`;
+      const buffer = Buffer.from(await image.arrayBuffer());
 
-    const { error: uploadError } = await supabaseServer.storage
-      .from("Grazie")
-      .upload(filePath, buffer, {
-        contentType: imageBlob.type,
-        upsert: false,
-      });
+      const { error: uploadError } = await supabaseServer.storage
+        .from("Grazie")
+        .upload(filePath, buffer, {
+          contentType: image.type,
+          upsert: false,
+        });
 
-    if (uploadError) {
-      console.error("Upload error:", uploadError);
-      return NextResponse.json({ error: uploadError.message }, { status: 400 });
+      if (uploadError) {
+        console.error("Upload error for file:", fileName, uploadError);
+        // We could continue or fail. Failing for now for consistency.
+        return NextResponse.json({ error: `Upload failed for ${fileName}: ${uploadError.message}` }, { status: 400 });
+      }
+
+      const { data: urlData } = supabaseServer.storage
+        .from("Grazie")
+        .getPublicUrl(filePath);
+
+      imageUrls.push(urlData.publicUrl);
     }
-
-    const { data: urlData } = supabaseServer.storage
-      .from("Grazie")
-      .getPublicUrl(filePath);
 
     /* ---------- PRODUCT INSERT ---------- */
     const { data: product, error: productError } = await supabaseServer
@@ -198,6 +206,7 @@ export async function POST(req: NextRequest) {
         category,
         material,
         stock,
+        delivey_days,
       })
       .select()
       .single();
@@ -211,7 +220,7 @@ export async function POST(req: NextRequest) {
       .from("images")
       .insert({
         product_id: product.id,
-        image_url: [urlData.publicUrl], // Wrap in array since column is ARRAY type
+        image_url: imageUrls,
       });
 
     if (imageError) {

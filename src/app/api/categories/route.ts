@@ -6,16 +6,24 @@ import { verifyAdminApi } from "@/src/lib/apiAdminAuth";
 // GET - Fetch all categories
 export async function GET(req: NextRequest) {
     try {
+        /* ---------- FETCH CATEGORIES ---------- */
         const { data, error } = await supabaseServer
-            .from("categories")
-            .select("*")
-            .order("name");
+            .from("Category")
+            .select("id, Category")
+            .order("Category");
 
         if (error) {
+            console.error("Fetch categories error:", error);
             return NextResponse.json({ error: error.message }, { status: 500 });
         }
 
-        return NextResponse.json({ data });
+        // Map Category column to name for compatibility
+        const mappedData = data.map((cat: any) => ({
+            ...cat,
+            name: cat.Category
+        }));
+
+        return NextResponse.json({ data: mappedData });
     } catch (err) {
         console.error("Fetch categories error:", err);
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
@@ -30,15 +38,17 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-        const { name, description } = await req.json();
+        const { name } = await req.json();
 
         if (!name) {
             return NextResponse.json({ error: "Name is required" }, { status: 400 });
         }
 
         const { data, error } = await supabaseServer
-            .from("categories")
-            .insert({ name, description })
+            .from("Category")
+            .insert({
+                Category: name,
+            })
             .select()
             .single();
 
@@ -69,7 +79,7 @@ export async function DELETE(req: NextRequest) {
         }
 
         const { error } = await supabaseServer
-            .from("categories")
+            .from("Category")
             .delete()
             .eq("id", id);
 
