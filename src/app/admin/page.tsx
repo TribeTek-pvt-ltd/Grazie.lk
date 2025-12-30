@@ -158,7 +158,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-12 mt-10">
       {/* Header Section */}
       <div className="flex items-start justify-between">
         <div>
@@ -192,21 +192,21 @@ export default function AdminDashboard() {
             value={stats.products}
             icon={<Package className="w-5 h-5" />}
             trend={stats.products > 0 ? "+12%" : undefined}
-            color="bg-amber-500"
+            color="bg-amber-50"
             loading={loading}
           />
           <StatCard
             title="Categories"
             value={stats.categories}
             icon={<FolderTree className="w-5 h-5" />}
-            color="bg-yellow-600"
+            color="bg-amber-50"
             loading={loading}
           />
           <StatCard
             title="Materials"
             value={stats.materials}
             icon={<Layers className="w-5 h-5" />}
-            color="bg-orange-500"
+            color="bg-amber-50"
             loading={loading}
           />
           <StatCard
@@ -214,7 +214,7 @@ export default function AdminDashboard() {
             value={stats.users}
             icon={<Users className="w-5 h-5" />}
             trend="+1"
-            color="bg-amber-600"
+            color="bg-amber-50"
             loading={loading}
           />
         </div>
