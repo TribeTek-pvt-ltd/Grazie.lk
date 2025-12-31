@@ -1,3 +1,5 @@
+import { getWhatsAppLink } from "@/src/config/constants";
+
 export default function ContactPage() {
   return (
     <section className="section text-center">
@@ -7,7 +9,7 @@ export default function ContactPage() {
       </p>
 
       <a
-        href="https://wa.me/94772220499"
+        href={getWhatsAppLink("Hello Grazie.lk!")}
         target="_blank"
         className="btn btn-primary"
       >

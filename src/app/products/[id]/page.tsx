@@ -1,22 +1,55 @@
-import { products } from "@/src/data/products"
-// import ProductImage from "@/src/components/ProductImage"
 import ProductInfo from "@/src/components/ProductInfo"
-import Link from "next/link"
-
+import { headers } from "next/headers";
+import { Metadata } from "next";
 
 interface Props {
-  params: Promise<{ id: string }>; // params is a Promise!
+  params: Promise<{ id: string }>;
+}
+
+async function getProduct(id: string) {
+  const host = (await headers()).get("host");
+  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+
+  try {
+    const res = await fetch(`${protocol}://${host}/api/products/get/${id}`, {
+      cache: 'no-store'
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch (error) {
+    console.error("Fetch product error:", error);
+    return null;
+  }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const product = await getProduct(id);
+
+  if (!product) {
+    return {
+      title: "Product Not Found",
+    };
+  }
+
+  return {
+    title: product.name,
+    description: product.description?.substring(0, 160) || `Buy ${product.name} from Grazie.lk. Premium pooja items delivered island-wide.`,
+    openGraph: {
+      title: product.name,
+      description: product.description?.substring(0, 160),
+      images: product.images?.[0]?.image_url?.[0] ? [product.images[0].image_url[0]] : [],
+    },
+  };
 }
 
 export default async function ProductDetailsPage({ params }: Props) {
-  // ✅ MUST await params
   const { id } = await params;
-
-  const product = products.find((p) => p.id === Number(id));
+  const product = await getProduct(id);
 
   if (!product) {
     return (
-      <section className="container mx-auto  py-20 text-center">
+      <section className="container mx-auto py-20 text-center">
         <h2 className="text-3xl font-heading font-medium text-dark mb-8">
           Product Not Found
         </h2>
@@ -32,11 +65,7 @@ export default async function ProductDetailsPage({ params }: Props) {
 
   return (
     <section className="section container mx-auto">
-      <div className=" gap-12 items-start">
-        {/* <ProductImage
-          image={product.image}
-          name={product.name}
-        /> */}
+      <div className="gap-12 items-start">
         <ProductInfo product={product} />
       </div>
     </section>

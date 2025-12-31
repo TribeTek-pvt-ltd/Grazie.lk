@@ -10,15 +10,17 @@ import SizeChartModal from "./SizeChartModal";
 import { Truck, Package, Link2, ShoppingCart, X } from "lucide-react";
 
 interface Product {
-  id: number;
+  id: string;
   name: string;
   price: number;
   category: string;
+  Category?: { Category: string };
   description: string;
-  image: string;
+  images?: { image_url: string[] }[];
   material?: string;
+  materials?: { name: string };
   stock: number;
-  shippingDays: number;
+  delivey_days: number;
   sizes?: {
     size: string;
     height: string;
@@ -32,6 +34,7 @@ export default function ProductDetail({ product }: { product: Product }) {
   const [cartCount, setCartCount] = useState(0);
   const [stock, setStock] = useState(product.stock);
   const [showSizeChart, setShowSizeChart] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(product.images?.[0]?.image_url?.[0] || "/placeholder.png");
   const router = useRouter();
 
   const handleAddToCart = () => {
@@ -54,8 +57,8 @@ export default function ProductDetail({ product }: { product: Product }) {
           id: product.id,
           name: product.name,
           price: product.price,
-          category: product.category,
-          image: product.image,
+          category: product.Category?.Category || product.category,
+          image: product.images?.[0]?.image_url?.[0] || "",
           quantity: 1,
         },
       ];
@@ -87,17 +90,40 @@ export default function ProductDetail({ product }: { product: Product }) {
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
-          {/* Product Image */}
-          <div className="relative aspect-[3/4] overflow-hidden  group">
-            <Image
-              src={product.image}
-              alt={product.name}
-              fill
-              priority
-              className="object-cover transition-transform duration-1000 group-hover:scale-110"
-              sizes="(max-width: 1024px) 100vw, 50vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-dark/40 via-transparent to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-700 pointer-events-none" />
+          {/* Product Gallery */}
+          <div className="space-y-6">
+            <div className="relative aspect-[3/4] overflow-hidden group bg-soft border border-gold/10">
+              <Image
+                src={selectedImage}
+                alt={product.name}
+                fill
+                priority
+                className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-dark/40 via-transparent to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-700 pointer-events-none" />
+            </div>
+
+            {/* Thumbnails */}
+            {product.images?.[0]?.image_url && product.images[0].image_url.length > 1 && (
+              <div className="grid grid-cols-5 gap-3">
+                {product.images[0].image_url.map((url, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedImage(url)}
+                    className={`relative aspect-square overflow-hidden border-2 transition-all duration-300 ${selectedImage === url ? "border-gold shadow-md" : "border-transparent opacity-60 hover:opacity-100"
+                      }`}
+                  >
+                    <Image
+                      src={url}
+                      alt={`${product.name} template ${idx + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Product Info */}
@@ -108,12 +134,14 @@ export default function ProductDetail({ product }: { product: Product }) {
               </h1>
 
               <div className="flex flex-wrap gap-4 mb-8">
-                <span className="px-6 py-3 bg-gold/20 text-gold rounded-full text-sm font-medium border border-gold/40">
-                  {product.category}
-                </span>
-                {product.material && (
-                  <span className="px-6 py-3 bg-accent/10 text-accent rounded-full text-sm font-medium">
-                    {product.material}
+                {(product.Category?.Category || (product.category && product.category !== "General")) && (
+                  <span className="px-6 py-3 bg-gold/20 text-gold  text-sm font-medium border border-gold/40">
+                    {product.Category?.Category || product.category}
+                  </span>
+                )}
+                {product.materials?.name && (
+                  <span className="px-6 py-3 bg-accent/10 text-accent  text-sm font-medium">
+                    {product.materials.name}
                   </span>
                 )}
               </div>
@@ -141,7 +169,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                 <div className="flex items-center gap-3">
                   <Truck className="w-5 h-5 text-gold" />
                   <span className="text-dark/80">
-                    Estimated Delivery: {product.shippingDays}-7 days island-wide
+                    Estimated Delivery: {product.delivey_days}-7 days island-wide
                   </span>
                 </div>
               </div>
@@ -167,11 +195,10 @@ export default function ProductDetail({ product }: { product: Product }) {
                 <button
                   onClick={handleAddToCart}
                   disabled={!inStock}
-                  className={`flex-1 flex items-center justify-center gap-3 py-5 px-8 rounded-xl font-semibold text-lg transition-all duration-300 shadow-xl ${
-                    inStock
-                      ? "bg-dark text-soft hover:bg-gold hover:text-soft"
-                      : "bg-accent/20 text-accent/50 cursor-not-allowed"
-                  }`}
+                  className={`flex-1 flex items-center justify-center gap-3 py-5 px-8 rounded-xl font-semibold text-lg transition-all duration-300 shadow-xl ${inStock
+                    ? "bg-dark text-soft hover:bg-gold hover:text-soft"
+                    : "bg-accent/20 text-accent/50 cursor-not-allowed"
+                    }`}
                 >
                   <ShoppingCart size={20} />
                   Add to Cart
@@ -239,9 +266,14 @@ export default function ProductDetail({ product }: { product: Product }) {
                 Order with Devotion
               </h2>
               <OrderForm
-                productName={product.name}
-                productPrice={product.price}
-                productCategory={product.category}
+                items={[{
+                  id: product.id,
+                  name: product.name,
+                  price: product.price,
+                  quantity: 1,
+                  category: product.Category?.Category || product.category
+                }]}
+                onOrderSuccess={() => setShowOrderModal(false)}
               />
             </div>
           </div>

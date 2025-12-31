@@ -1,3 +1,5 @@
+import { Sparkles, Flame, Flower } from "lucide-react";
+
 export default function AboutSection() {
   return (
     <section className="w-full py-20 bg-soft">
@@ -26,16 +28,21 @@ export default function AboutSection() {
             </p>
 
             <div className="flex flex-wrap gap-4">
-              <div className="px-6 py-3 rounded-full bg-gold/10 text-dark font-medium">
-                ✨ Authentic Materials
-              </div>
-              <div className="px-6 py-3 rounded-full bg-gold/10 text-dark font-medium">
-                🪔 Traditional Craftsmanship
-              </div>
-              <div className="px-6 py-3 rounded-full bg-gold/10 text-dark font-medium">
-                🌸 Sacred & Thoughtful
-              </div>
-            </div>
+  <div className="flex items-center gap-2 px-6 py-3 rounded-full bg-gold/10 text-dark font-medium">
+    <Sparkles className="w-5 h-5 text-gold" />
+    Authentic Materials
+  </div>
+
+  <div className="flex items-center gap-2 px-6 py-3 rounded-full bg-gold/10 text-dark font-medium">
+    <Flame className="w-5 h-5 text-gold" />
+    Traditional Craftsmanship
+  </div>
+
+  <div className="flex items-center gap-2 px-6 py-3 rounded-full bg-gold/10 text-dark font-medium">
+    <Flower className="w-5 h-5 text-gold" />
+    Sacred & Thoughtful
+  </div>
+</div>
           </div>
 
           {/* Right Visual */}

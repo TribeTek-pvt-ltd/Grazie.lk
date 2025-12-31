@@ -20,7 +20,7 @@ export default function SizeChartModal({ sizes, onClose }: SizeChartModalProps) 
       onClick={onClose}
     >
       <div
-        className="bg-soft rounded-3xl p-8 md:p-12 max-w-2xl w-full shadow-2xl max-h-[90vh] overflow-y-auto"
+        className="bg-soft  p-8 md:p-12 max-w-2xl w-full shadow-2xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <h3 className="text-3xl md:text-4xl font-heading font-semibold text-dark mb-10 text-center">
@@ -52,7 +52,7 @@ export default function SizeChartModal({ sizes, onClose }: SizeChartModalProps) 
 
         <button
           onClick={onClose}
-          className="mt-12 w-full py-5 bg-gold text-soft rounded-2xl font-bold text-xl hover:bg-dark hover:shadow-2xl transition-all duration-300 shadow-xl"
+          className="mt-12 w-full py-5 bg-gold text-soft rounded-xl font-bold text-xl hover:bg-dark hover:shadow-2xl transition-all duration-300 shadow-xl"
         >
           Close
         </button>
