@@ -45,7 +45,7 @@ export default function AboutSection() {
             </div>
           </div>
 
-          {/* Right Visual */}
+          {/* Right Visualdd */}
           <div className="relative group perspective">
             <div className="absolute top-4 left-4 w-full h-full border-2 border-gold/30 rounded-md -z-10 group-hover:top-6 group-hover:left-6 transition-all duration-500"></div>
             <div className="absolute -top-4 -right-4 w-32 h-32 bg-gold/5 rounded-full blur-2xl"></div>
