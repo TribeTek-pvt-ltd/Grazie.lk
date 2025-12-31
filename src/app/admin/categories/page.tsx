@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FolderTree, Plus, Edit2, Trash2, Search } from "lucide-react";
+import { FolderTree, Plus, Edit2, Trash2, Search, X } from "lucide-react";
 import LoadingSpinner from "@/src/components/LoadingSpinner";
 import EmptyState from "@/src/components/EmptyState";
 
@@ -18,7 +18,9 @@ export default function CategoriesPage() {
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     const [newCategory, setNewCategory] = useState({ name: "", description: "" });
+    const [editingCategory, setEditingCategory] = useState<Category | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -61,6 +63,41 @@ export default function CategoriesPage() {
             }
         } catch (error) {
             alert("Error creating category");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const handleEditClick = (category: Category) => {
+        setEditingCategory(category);
+        setShowEditModal(true);
+    };
+
+    const handleUpdateCategory = async () => {
+        if (!editingCategory || !editingCategory.name.trim()) return;
+
+        setSubmitting(true);
+        try {
+            const res = await fetch("/api/categories", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: editingCategory.id,
+                    name: editingCategory.name,
+                    description: editingCategory.description,
+                }),
+            });
+
+            if (res.ok) {
+                setShowEditModal(false);
+                setEditingCategory(null);
+                fetchCategories();
+            } else {
+                const error = await res.json();
+                alert(error.error || "Failed to update category");
+            }
+        } catch (error) {
+            alert("Error updating category");
         } finally {
             setSubmitting(false);
         }
@@ -164,7 +201,10 @@ export default function CategoriesPage() {
                                         <FolderTree className={`w-5 h-5 ${colors[index % colors.length].replace('bg-', 'text-')}`} />
                                     </div>
                                     <div className="flex gap-1">
-                                        <button className="p-2 hover:bg-gray-100 rounded-lg transition">
+                                        <button
+                                            onClick={() => handleEditClick(category)}
+                                            className="p-2 hover:bg-gray-100 rounded-lg transition"
+                                        >
                                             <Edit2 className="w-4 h-4 text-gray-600" />
                                         </button>
                                         <button
@@ -187,14 +227,17 @@ export default function CategoriesPage() {
 
             {/* Add Category Modal */}
             {showAddModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
-                        <div className="border-b border-gray-200 px-6 py-4">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden">
+                        <div className="border-b border-gray-100 px-8 py-6 flex items-center justify-between">
                             <h2 className="text-xl font-bold text-gray-900">Add New Category</h2>
+                            <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-600 transition">
+                                <X className="w-6 h-6" />
+                            </button>
                         </div>
-                        <div className="p-6 space-y-4">
+                        <div className="p-8 space-y-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-semibold text-gray-700 mb-2 tracking-wide uppercase">
                                     Category Name *
                                 </label>
                                 <input
@@ -202,12 +245,12 @@ export default function CategoriesPage() {
                                     value={newCategory.name}
                                     onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
                                     placeholder="e.g., Furniture"
-                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent"
+                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold focus:border-transparent transition-all outline-none"
                                     autoFocus
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-semibold text-gray-700 mb-2 tracking-wide uppercase">
                                     Description (Optional)
                                 </label>
                                 <textarea
@@ -215,17 +258,17 @@ export default function CategoriesPage() {
                                     onChange={(e) => setNewCategory({ ...newCategory, description: e.target.value })}
                                     placeholder="Brief description of this category"
                                     rows={3}
-                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent resize-none"
+                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold focus:border-transparent resize-none transition-all outline-none"
                                 />
                             </div>
                         </div>
-                        <div className="border-t border-gray-200 px-6 py-4 flex gap-3">
+                        <div className="bg-gray-50 px-8 py-6 flex gap-3">
                             <button
                                 onClick={handleAddCategory}
                                 disabled={submitting || !newCategory.name.trim()}
-                                className="flex-1 bg-gold text-white py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="flex-1 bg-gold text-white py-3 rounded-xl font-bold hover:bg-opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-gold/20"
                             >
-                                {submitting ? "Adding..." : "Add Category"}
+                                {submitting ? "Processing..." : "Create Category"}
                             </button>
                             <button
                                 onClick={() => {
@@ -233,7 +276,67 @@ export default function CategoriesPage() {
                                     setNewCategory({ name: "", description: "" });
                                 }}
                                 disabled={submitting}
-                                className="px-6 py-2.5 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition"
+                                className="px-6 py-3 border border-gray-200 rounded-xl font-bold text-gray-600 hover:bg-white transition-all outline-none"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit Category Modal */}
+            {showEditModal && editingCategory && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden">
+                        <div className="border-b border-gray-100 px-8 py-6 flex items-center justify-between">
+                            <h2 className="text-xl font-bold text-gray-900">Edit Category</h2>
+                            <button onClick={() => setShowEditModal(false)} className="text-gray-400 hover:text-gray-600 transition">
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+                        <div className="p-8 space-y-6">
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2 tracking-wide uppercase">
+                                    Category Name *
+                                </label>
+                                <input
+                                    type="text"
+                                    value={editingCategory.name}
+                                    onChange={(e) => setEditingCategory({ ...editingCategory, name: e.target.value })}
+                                    placeholder="e.g., Furniture"
+                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold focus:border-transparent transition-all outline-none"
+                                    autoFocus
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2 tracking-wide uppercase">
+                                    Description (Optional)
+                                </label>
+                                <textarea
+                                    value={editingCategory.description || ""}
+                                    onChange={(e) => setEditingCategory({ ...editingCategory, description: e.target.value })}
+                                    placeholder="Brief description of this category"
+                                    rows={3}
+                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold focus:border-transparent resize-none transition-all outline-none"
+                                />
+                            </div>
+                        </div>
+                        <div className="bg-gray-50 px-8 py-6 flex gap-3">
+                            <button
+                                onClick={handleUpdateCategory}
+                                disabled={submitting || !editingCategory.name.trim()}
+                                className="flex-1 bg-gold text-white py-3 rounded-xl font-bold hover:bg-opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-gold/20"
+                            >
+                                {submitting ? "Saving..." : "Save Changes"}
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setShowEditModal(false);
+                                    setEditingCategory(null);
+                                }}
+                                disabled={submitting}
+                                className="px-6 py-3 border border-gray-200 rounded-xl font-bold text-gray-600 hover:bg-white transition-all outline-none"
                             >
                                 Cancel
                             </button>

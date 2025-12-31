@@ -23,9 +23,10 @@ async function getProduct(id: string) {
 export default async function AdminProductView({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ productId: string }>;
 }) {
-  const result = await getProduct(params.id);
+  const { productId } = await params;
+  const result = await getProduct(productId);
 
   if (!result || !result.data) {
     notFound();

@@ -3,13 +3,13 @@ import { createSupabaseServerClient, requireAdmin } from "@/src/lib/supabaseAuth
 
 export async function PATCH(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         await requireAdmin();
         const supabase = await createSupabaseServerClient();
         const body = await request.json();
-        const { id } = params;
+        const { id } = await params;
 
         const { data, error } = await supabase
             .from("testimonials")

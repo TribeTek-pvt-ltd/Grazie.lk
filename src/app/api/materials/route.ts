@@ -3,28 +3,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabaseServer } from "@/src/lib/supabaseServer";
 import { verifyAdminApi } from "@/src/lib/apiAdminAuth";
 
-// GET - Fetch all materials from products table (since materials table no longer exists)
+// GET - Fetch all materials from materials table
 export async function GET(req: NextRequest) {
     try {
         const { data, error } = await supabaseServer
-            .from("products")
-            .select("material")
-            .not("material", "is", null);
+            .from("materials")
+            .select("id, name, description")
+            .order("name");
 
         if (error) {
             console.error("Fetch materials error:", error);
             return NextResponse.json({ error: error.message }, { status: 500 });
         }
 
-        // Get unique materials and map to the format expected by the frontend
-        const uniqueMaterials = Array.from(new Set(data.map((p: any) => p.material)))
-            .filter(Boolean)
-            .map((name, index) => ({
-                id: String(index + 1),
-                name: name
-            }));
-
-        return NextResponse.json({ data: uniqueMaterials });
+        return NextResponse.json({ data });
     } catch (err) {
         console.error("Fetch materials error:", err);
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
@@ -58,6 +50,38 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ data });
     } catch (err) {
         console.error("Create material error:", err);
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
+}
+
+// PUT - Update material
+export async function PUT(req: NextRequest) {
+    const adminUser = await verifyAdminApi(req);
+    if (!adminUser) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    try {
+        const { id, name, description } = await req.json();
+
+        if (!id || !name) {
+            return NextResponse.json({ error: "ID and name are required" }, { status: 400 });
+        }
+
+        const { data, error } = await supabaseServer
+            .from("materials")
+            .update({ name, description })
+            .eq("id", id)
+            .select()
+            .single();
+
+        if (error) {
+            return NextResponse.json({ error: error.message }, { status: 400 });
+        }
+
+        return NextResponse.json({ data });
+    } catch (err) {
+        console.error("Update material error:", err);
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }

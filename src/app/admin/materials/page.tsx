@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Layers, Plus, Edit2, Trash2, Search } from "lucide-react";
+import { Layers, Plus, Edit2, Trash2, Search, X } from "lucide-react";
 import LoadingSpinner from "@/src/components/LoadingSpinner";
 import EmptyState from "@/src/components/EmptyState";
 
@@ -18,7 +18,9 @@ export default function MaterialsPage() {
     const [materials, setMaterials] = useState<Material[]>([]);
     const [loading, setLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     const [newMaterial, setNewMaterial] = useState({ name: "", description: "" });
+    const [editingMaterial, setEditingMaterial] = useState<Material | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -61,6 +63,41 @@ export default function MaterialsPage() {
             }
         } catch (error) {
             alert("Error creating material");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const handleEditClick = (material: Material) => {
+        setEditingMaterial(material);
+        setShowEditModal(true);
+    };
+
+    const handleUpdateMaterial = async () => {
+        if (!editingMaterial || !editingMaterial.name.trim()) return;
+
+        setSubmitting(true);
+        try {
+            const res = await fetch("/api/materials", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: editingMaterial.id,
+                    name: editingMaterial.name,
+                    description: editingMaterial.description,
+                }),
+            });
+
+            if (res.ok) {
+                setShowEditModal(false);
+                setEditingMaterial(null);
+                fetchMaterials();
+            } else {
+                const error = await res.json();
+                alert(error.error || "Failed to update material");
+            }
+        } catch (error) {
+            alert("Error updating material");
         } finally {
             setSubmitting(false);
         }
@@ -164,7 +201,10 @@ export default function MaterialsPage() {
                                         <Layers className={`w-5 h-5 ${colors[index % colors.length].replace('bg-', 'text-')}`} />
                                     </div>
                                     <div className="flex gap-1">
-                                        <button className="p-2 hover:bg-gray-100 rounded-lg transition">
+                                        <button
+                                            onClick={() => handleEditClick(material)}
+                                            className="p-2 hover:bg-gray-100 rounded-lg transition"
+                                        >
                                             <Edit2 className="w-4 h-4 text-gray-600" />
                                         </button>
                                         <button
@@ -187,27 +227,30 @@ export default function MaterialsPage() {
 
             {/* Add Material Modal */}
             {showAddModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
-                        <div className="border-b border-gray-200 px-6 py-4">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden">
+                        <div className="border-b border-gray-100 px-8 py-6 flex items-center justify-between">
                             <h2 className="text-xl font-bold text-gray-900">Add New Material</h2>
+                            <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-600 transition">
+                                <X className="w-6 h-6" />
+                            </button>
                         </div>
-                        <div className="p-6 space-y-4">
+                        <div className="p-8 space-y-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-semibold text-gray-700 mb-2 tracking-wide uppercase">
                                     Material Name *
                                 </label>
                                 <input
                                     type="text"
                                     value={newMaterial.name}
                                     onChange={(e) => setNewMaterial({ ...newMaterial, name: e.target.value })}
-                                    placeholder="e.g., Wood"
-                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent"
+                                    placeholder="e.g., Solid Wood"
+                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold focus:border-transparent transition-all outline-none"
                                     autoFocus
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-semibold text-gray-700 mb-2 tracking-wide uppercase">
                                     Description (Optional)
                                 </label>
                                 <textarea
@@ -215,17 +258,17 @@ export default function MaterialsPage() {
                                     onChange={(e) => setNewMaterial({ ...newMaterial, description: e.target.value })}
                                     placeholder="Brief description of this material"
                                     rows={3}
-                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent resize-none"
+                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold focus:border-transparent resize-none transition-all outline-none"
                                 />
                             </div>
                         </div>
-                        <div className="border-t border-gray-200 px-6 py-4 flex gap-3">
+                        <div className="bg-gray-50 px-8 py-6 flex gap-3">
                             <button
                                 onClick={handleAddMaterial}
                                 disabled={submitting || !newMaterial.name.trim()}
-                                className="flex-1 bg-gold text-white py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="flex-1 bg-gold text-white py-3 rounded-xl font-bold hover:bg-opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-gold/20"
                             >
-                                {submitting ? "Adding..." : "Add Material"}
+                                {submitting ? "Processing..." : "Create Material"}
                             </button>
                             <button
                                 onClick={() => {
@@ -233,7 +276,67 @@ export default function MaterialsPage() {
                                     setNewMaterial({ name: "", description: "" });
                                 }}
                                 disabled={submitting}
-                                className="px-6 py-2.5 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition"
+                                className="px-6 py-3 border border-gray-200 rounded-xl font-bold text-gray-600 hover:bg-white transition-all outline-none"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit Material Modal */}
+            {showEditModal && editingMaterial && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden">
+                        <div className="border-b border-gray-100 px-8 py-6 flex items-center justify-between">
+                            <h2 className="text-xl font-bold text-gray-900">Edit Material</h2>
+                            <button onClick={() => setShowEditModal(false)} className="text-gray-400 hover:text-gray-600 transition">
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+                        <div className="p-8 space-y-6">
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2 tracking-wide uppercase">
+                                    Material Name *
+                                </label>
+                                <input
+                                    type="text"
+                                    value={editingMaterial.name}
+                                    onChange={(e) => setEditingMaterial({ ...editingMaterial, name: e.target.value })}
+                                    placeholder="e.g., Solid Wood"
+                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold focus:border-transparent transition-all outline-none"
+                                    autoFocus
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2 tracking-wide uppercase">
+                                    Description (Optional)
+                                </label>
+                                <textarea
+                                    value={editingMaterial.description || ""}
+                                    onChange={(e) => setEditingMaterial({ ...editingMaterial, description: e.target.value })}
+                                    placeholder="Brief description of this material"
+                                    rows={3}
+                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold focus:border-transparent resize-none transition-all outline-none"
+                                />
+                            </div>
+                        </div>
+                        <div className="bg-gray-50 px-8 py-6 flex gap-3">
+                            <button
+                                onClick={handleUpdateMaterial}
+                                disabled={submitting || !editingMaterial.name.trim()}
+                                className="flex-1 bg-gold text-white py-3 rounded-xl font-bold hover:bg-opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-gold/20"
+                            >
+                                {submitting ? "Saving..." : "Save Changes"}
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setShowEditModal(false);
+                                    setEditingMaterial(null);
+                                }}
+                                disabled={submitting}
+                                className="px-6 py-3 border border-gray-200 rounded-xl font-bold text-gray-600 hover:bg-white transition-all outline-none"
                             >
                                 Cancel
                             </button>

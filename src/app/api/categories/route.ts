@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
         /* ---------- FETCH CATEGORIES ---------- */
         const { data, error } = await supabaseServer
             .from("Category")
-            .select("id, Category")
+            .select("id, Category, description")
             .order("Category");
 
         if (error) {
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-        const { name } = await req.json();
+        const { name, description } = await req.json();
 
         if (!name) {
             return NextResponse.json({ error: "Name is required" }, { status: 400 });
@@ -48,6 +48,7 @@ export async function POST(req: NextRequest) {
             .from("Category")
             .insert({
                 Category: name,
+                description: description
             })
             .select()
             .single();
@@ -59,6 +60,41 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ data });
     } catch (err) {
         console.error("Create category error:", err);
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
+}
+
+// PUT - Update category
+export async function PUT(req: NextRequest) {
+    const adminUser = await verifyAdminApi(req);
+    if (!adminUser) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    try {
+        const { id, name, description } = await req.json();
+
+        if (!id || !name) {
+            return NextResponse.json({ error: "ID and name are required" }, { status: 400 });
+        }
+
+        const { data, error } = await supabaseServer
+            .from("Category")
+            .update({
+                Category: name,
+                description: description
+            })
+            .eq("id", id)
+            .select()
+            .single();
+
+        if (error) {
+            return NextResponse.json({ error: error.message }, { status: 400 });
+        }
+
+        return NextResponse.json({ data });
+    } catch (err) {
+        console.error("Update category error:", err);
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }
