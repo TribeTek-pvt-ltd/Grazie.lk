@@ -50,12 +50,11 @@ export default function AboutSection() {
             <div className="absolute top-4 left-4 w-full h-full border-2 border-gold/30 rounded-md -z-10 group-hover:top-6 group-hover:left-6 transition-all duration-500"></div>
             <div className="absolute -top-4 -right-4 w-32 h-32 bg-gold/5 rounded-full blur-2xl"></div>
             <img
-              src="/about/logo.png"
+              src="/about/about-image.png"
               alt="Pooja items"
               className="relative z-10 rounded-md shadow-xl object-cover w-full h-[420px]"
             />
           </div>
-
         </div>
       </div>
     </section>
