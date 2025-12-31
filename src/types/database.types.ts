@@ -73,6 +73,29 @@ export interface Database {
                     Category?: string
                 }
             }
+            testimonials: {
+                Row: {
+                    id: string
+                    name: string
+                    content: string
+                    rating: number
+                    isActive: boolean
+                }
+                Insert: {
+                    id?: string
+                    name: string
+                    content: string
+                    rating: number
+                    isActive?: boolean
+                }
+                Update: {
+                    id?: string
+                    name?: string
+                    content?: string
+                    rating?: number
+                    isActive?: boolean
+                }
+            }
         }
     }
 }

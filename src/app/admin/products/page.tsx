@@ -14,6 +14,7 @@ interface Product {
   price: number;
   stock: number;
   category_id?: string;
+  Category?: { Category: string };
   material_id?: string;
   created_at: string;
   images?: Array<{ image_url: string[] }>;

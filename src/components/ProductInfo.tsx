@@ -263,9 +263,14 @@ export default function ProductDetail({ product }: { product: Product }) {
                 Order with Devotion
               </h2>
               <OrderForm
-                productName={product.name}
-                productPrice={product.price}
-                productCategory={product.category}
+                items={[{
+                  id: product.id,
+                  name: product.name,
+                  price: product.price,
+                  quantity: 1,
+                  category: product.Category?.Category || product.category
+                }]}
+                onOrderSuccess={() => setShowOrderModal(false)}
               />
             </div>
           </div>

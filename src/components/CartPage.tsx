@@ -3,7 +3,9 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingCart, Trash2, Plus, Minus } from "lucide-react";
+import { ShoppingCart, Trash2, Plus, Minus, X } from "lucide-react";
+import { getWhatsAppLink } from "../config/constants";
+import OrderForm from "./OrderForm";
 
 interface CartItem {
   id: number;
@@ -16,6 +18,7 @@ interface CartItem {
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [showOrderModal, setShowOrderModal] = useState(false);
 
   /* -----------------------------------------
      Load cart from localStorage
@@ -77,33 +80,6 @@ export default function CartPage() {
     (sum, item) => sum + item.quantity,
     0
   );
-
-  /* -----------------------------------------
-     WhatsApp Message
-  ----------------------------------------- */
-  const generateWhatsAppMessage = () => {
-    const itemsList = cartItems
-      .map(
-        (item) =>
-          `• ${item.name} (x${item.quantity}) - Rs. ${(
-            item.price * item.quantity
-          ).toLocaleString()}`
-      )
-      .join("\n");
-
-    return `
-🪔 Grazie.lk Cart Order
-
-${itemsList}
-
-Total Items: ${itemCount}
-Grand Total: Rs. ${subtotal.toLocaleString()}
-    `.trim();
-  };
-
-  const whatsappLink = `https://wa.me/94772220499?text=${encodeURIComponent(
-    generateWhatsAppMessage()
-  )}`;
 
   /* -----------------------------------------
      Empty Cart
@@ -247,14 +223,12 @@ Grand Total: Rs. ${subtotal.toLocaleString()}
                 </div>
               </div>
 
-              <a
-                href={whatsappLink}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={() => setShowOrderModal(true)}
                 className="w-full block text-center py-6 px-8 bg-gold text-soft font-bold text-xl rounded-xl hover:bg-dark transition-all shadow-2xl"
               >
                 💬 Place Order via WhatsApp
-              </a>
+              </button>
 
               <p className="text-center text-accent/70 text-sm mt-6">
                 We’ll confirm your order and delivery details personally.
@@ -270,6 +244,49 @@ Grand Total: Rs. ${subtotal.toLocaleString()}
           </div>
         </div>
       </div>
+
+      {/* Order Form Modal */}
+      {showOrderModal && (
+        <div
+          className="fixed inset-0 bg-dark/70 backdrop-blur-md z-[100] flex items-center justify-center p-4"
+          onClick={() => setShowOrderModal(false)}
+        >
+          <div
+            className="bg-soft shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowOrderModal(false)}
+              className="absolute top-6 right-6 text-dark/60 hover:text-dark transition z-10"
+              aria-label="Close order form"
+            >
+              <X size={28} />
+            </button>
+
+            {/* Form Content */}
+            <div className="p-8 md:p-12">
+              <h2 className="text-3xl md:text-4xl font-heading font-semibold text-dark mb-8 text-center">
+                Confirm your Order
+              </h2>
+              <OrderForm
+                items={cartItems.map(item => ({
+                  id: item.id,
+                  name: item.name,
+                  price: item.price,
+                  quantity: item.quantity,
+                  category: item.category
+                }))}
+                onOrderSuccess={() => {
+                  setShowOrderModal(false);
+                  setCartItems([]);
+                  localStorage.removeItem("grazieCart");
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

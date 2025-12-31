@@ -17,7 +17,10 @@ export default function AdminNavbar() {
 
         <button
           onClick={() => {
+            // Remove the admin_token cookie
             document.cookie = "admin_token=; Max-Age=0; path=/";
+            // Remove the Supabase auth cookie
+            document.cookie = "sb-poikvtgcxpzfyykkvtkh-auth-token=; Max-Age=0; path=/";
             window.location.href = "/login";
           }}
           className="text-xs font-bold uppercase tracking-widest text-red-500 hover:text-red-700 transition-colors px-4 py-2 rounded-lg border border-red-100 hover:border-red-200 bg-red-50/50"

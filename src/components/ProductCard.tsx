@@ -1,11 +1,15 @@
 import Link from "next/link";
-import { Trash2 } from "lucide-react";
+import { Trash2, X } from "lucide-react";
+import { getWhatsAppLink } from "../config/constants";
+import { useState } from "react";
+import OrderForm from "./OrderForm";
 
 interface Product {
   id: string | number;
   name: string;
   price: number;
   category?: string;
+  Category?: { Category: string };
   image?: string | string[];
   images?: Array<{ image_url: string[] }>;
   description: string;
@@ -18,9 +22,8 @@ interface Props {
 }
 
 export default function ProductCard({ product, isAdmin = false, onDelete }: Props) {
-  const whatsappLink = `https://wa.me/947XXXXXXXX?text=I want to order ${encodeURIComponent(
-    product.name
-  )}`;
+  const [showOrderModal, setShowOrderModal] = useState(false);
+  const whatsappLink = getWhatsAppLink(`I want to order ${product.name}`);
 
   // Determine the best image URL to show
   let mainImageUrl = "/placeholder.png";
@@ -54,7 +57,7 @@ export default function ProductCard({ product, isAdmin = false, onDelete }: Prop
 
         {/* Category */}
         <p className="text-accent text-xs sm:text-sm mb-2 uppercase tracking-wide font-medium">
-          {product.category || "General"}
+          {product.Category?.Category || product.category || "General"}
         </p>
 
         {/* Subtle gold divider */}
@@ -91,20 +94,57 @@ export default function ProductCard({ product, isAdmin = false, onDelete }: Prop
               >
                 View
               </Link>
-              <a
-                href={whatsappLink}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={() => setShowOrderModal(true)}
                 className="flex-1 text-center py-2 px-4 bg-gold text-soft font-semibold hover:bg-dark transition shadow-md"
               >
                 Order
-              </a>
+              </button>
             </>
           )}
         </div>
       </div>
 
       <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-10 bg-dark transition-opacity duration-500"></div>
+
+      {/* Order Form Modal */}
+      {showOrderModal && (
+        <div
+          className="fixed inset-0 bg-dark/70 backdrop-blur-md z-[100] flex items-center justify-center p-4"
+          onClick={() => setShowOrderModal(false)}
+        >
+          <div
+            className="bg-soft shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowOrderModal(false)}
+              className="absolute top-6 right-6 text-dark/60 hover:text-dark transition z-10"
+              aria-label="Close order form"
+            >
+              <X size={28} />
+            </button>
+
+            {/* Form Content */}
+            <div className="p-8 md:p-12">
+              <h2 className="text-3xl md:text-4xl font-heading font-semibold text-dark mb-8 text-center">
+                Order with Devotion
+              </h2>
+              <OrderForm
+                items={[{
+                  id: product.id,
+                  name: product.name,
+                  price: product.price,
+                  quantity: 1,
+                  category: product.Category?.Category || product.category
+                }]}
+                onOrderSuccess={() => setShowOrderModal(false)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

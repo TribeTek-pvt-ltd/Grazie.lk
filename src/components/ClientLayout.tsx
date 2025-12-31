@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import SalesNotification from "./SalesNotification";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -17,6 +18,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
             <Navbar />
             {children}
             <Footer />
+            <SalesNotification />
         </>
     );
 }

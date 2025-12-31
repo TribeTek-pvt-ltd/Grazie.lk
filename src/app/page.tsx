@@ -8,6 +8,7 @@ import AboutSection from "../components/AboutSection"
 import HowToOrder from "../components/HowToOrder"
 import Link from "next/link"
 import LoadingSpinner from "@/src/components/LoadingSpinner";
+import TestimonialSection from "@/src/components/TestimonialSection";
 
 export default function HomePage() {
   const [products, setProducts] = useState<any[]>([]);
@@ -19,7 +20,7 @@ export default function HomePage() {
         const res = await fetch("/api/products/public");
         const data = await res.json();
         if (res.ok && data.products) {
-          setProducts(data.products.slice(0, 6)); // Display last 6 products
+          setProducts(data.products.slice(0, 4)); // Display featured products
         }
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -36,9 +37,10 @@ export default function HomePage() {
       <Hero2 />
       <AboutSection />
 
-      <section className="section">
-        <div className="container mx-auto text-center px-6 md:px-16 m-12 ">
-          <h2 className="section-title">Featured Products</h2>
+      <section className="section bg-white">
+        <div className="container mx-auto text-center px-6 md:px-16 mt-20 mb-12">
+          <h2 className="section-title">Sacred Highlights</h2>
+          <p className="text-accent mt-2 italic font-body">Handpicked selection of our finest offerings</p>
         </div>
 
         {loading ? (
@@ -46,19 +48,24 @@ export default function HomePage() {
             <LoadingSpinner text="Loading featured products..." />
           </div>
         ) : (
-          <ProductGrid products={products} />
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <ProductGrid products={products} />
+          </div>
         )}
 
-        <div className="text-center mt-12">
+        <div className="text-center mt-12 mb-20">
           <Link
             href="/products"
-            className="px-8 py-3 border border-dark text-dark rounded-xl hover:bg-dark hover:text-soft transition"
+            className="px-10 py-4 bg-dark text-soft rounded-xl hover:bg-opacity-90 transition font-bold tracking-widest uppercase text-xs"
           >
-            View All
+            Explore Full Collection
           </Link>
-          <HowToOrder />
         </div>
       </section>
+
+      <TestimonialSection />
+
+      <HowToOrder />
     </>
   )
 }

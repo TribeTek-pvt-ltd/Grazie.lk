@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Package, Search, SlidersHorizontal, X } from "lucide-react";
 import LoadingSpinner from "@/src/components/LoadingSpinner";
 import ProductCard from "@/src/components/ProductCard";
+import FilterBar from "@/src/components/FilterBar";
 
 interface Product {
   id: string;
@@ -12,6 +13,7 @@ interface Product {
   price: number;
   stock: number;
   category: string;
+  Category?: { Category: string };
   material?: string;
   images?: Array<{ image_url: string[] }>;
 }
@@ -28,7 +30,6 @@ export default function ProductsPage() {
   const [selectedMaterial, setSelectedMaterial] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -102,134 +103,33 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-base">
-      {/* Header */}
-      {/* <div className="bg-white border-b border-gray-200"> */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-4xl font-bold text-dark mb-2">Our Products</h1>
-        <p className="text-gray-600">Discover our curated premium collection</p>
+    <div className="min-h-screen bg-base pb-20">
+      <div className="bg-dark py-12 px-4 shadow-2xl border-b border-gold/30">
+        <div className="max-w-7xl mx-auto text-center">
+          <h1 className="text-4xl font-bold text-soft mb-2 font-heading tracking-wide">Sacred Collection</h1>
+          <p className="text-accent italic font-body">Discover curated premium artifacts for your spiritual journey</p>
+        </div>
       </div>
-      {/* </div> */}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Filter Toggle Button (All Screens) */}
-        <div className="flex items-center justify-between mb-8">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 bg-dark px-6 py-3 rounded-xl shadow-sm border border-gray-100 text-base font-semibold hover:border-gold transition-all"
-          >
-            <SlidersHorizontal className="w-4 h-4" />
-            {showFilters ? "Hide Filters" : "Show Filters"}
-          </button>
-          <div className="text-sm font-medium text-base text-dark px-4 py-2">
-            {filteredProducts.length} items found
-          </div>
-        </div>
+        <FilterBar
+          categories={categories}
+          materials={materials}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          selectedMaterial={selectedMaterial}
+          setSelectedMaterial={setSelectedMaterial}
+          minPrice={minPrice}
+          setMinPrice={setMinPrice}
+          maxPrice={maxPrice}
+          setMaxPrice={setMaxPrice}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          clearFilters={clearFilters}
+          resultsCount={filteredProducts.length}
+        />
 
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar / Filters */}
-          <div className={`${showFilters ? 'block animate-in fade-in slide-in-from-left duration-300' : 'hidden'} w-full lg:w-64 space-y-8`}>
-            {/* Search (Sidebar) */}
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <h3 className="text-sm font-bold text-dark uppercase tracking-wider mb-4">Search</h3>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Find something..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent text-sm transition"
-                />
-              </div>
-            </div>
-
-            {/* Category Filter */}
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-bold text-dark uppercase tracking-wider">Category</h3>
-                {selectedCategory && (
-                  <button onClick={() => setSelectedCategory("")} className="text-xs text-gold hover:underline">Clear</button>
-                )}
-              </div>
-              <div className="space-y-2">
-                {categories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => setSelectedCategory(selectedCategory === cat.id ? "" : cat.id)}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${selectedCategory === cat.id
-                      ? "bg-gold text-white font-medium"
-                      : "text-gray-600 hover:bg-gray-50"
-                      }`}
-                  >
-                    {cat.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Material Filter */}
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-bold text-dark uppercase tracking-wider">Material</h3>
-                {selectedMaterial && (
-                  <button onClick={() => setSelectedMaterial("")} className="text-xs text-gold hover:underline">Clear</button>
-                )}
-              </div>
-              <div className="space-y-2">
-                {materials.map((mat) => (
-                  <button
-                    key={mat.id}
-                    onClick={() => setSelectedMaterial(selectedMaterial === mat.name ? "" : mat.name)}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${selectedMaterial === mat.name
-                      ? "bg-gold text-white font-medium"
-                      : "text-gray-600 hover:bg-gray-50"
-                      }`}
-                  >
-                    {mat.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Price Filter */}
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-bold text-dark uppercase tracking-wider">Price Range</h3>
-                {(minPrice || maxPrice) && (
-                  <button onClick={() => { setMinPrice(""); setMaxPrice(""); }} className="text-xs text-gold hover:underline">Clear</button>
-                )}
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <input
-                  type="number"
-                  placeholder="Min"
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-gold outline-none"
-                />
-                <input
-                  type="number"
-                  placeholder="Max"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-gold outline-none"
-                />
-              </div>
-            </div>
-
-            {/* Reset All */}
-            {(selectedCategory || selectedMaterial || searchQuery || minPrice || maxPrice) && (
-              <button
-                onClick={clearFilters}
-                className="w-full py-3 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-dark/90 transition flex items-center justify-center gap-2"
-              >
-                <X className="w-4 h-4" />
-                Reset All Filters
-              </button>
-            )}
-          </div>
-
           {/* Product Listing */}
           <div className="flex-1">
             {filteredProducts.length === 0 ? (
@@ -250,7 +150,7 @@ export default function ProductsPage() {
               </div>
             ) : (
               <>
-                <div className={`grid grid-cols-2 md:grid-cols-3 ${showFilters ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-6 transition-all duration-300`}>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 transition-all duration-300">
                   {filteredProducts.map((product) => (
                     <ProductCard key={product.id} product={product as any} />
                   ))}

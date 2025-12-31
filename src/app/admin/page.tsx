@@ -15,7 +15,8 @@ import {
   BarChart3,
   Clock,
   Sparkles,
-  Image as ImageIcon
+  Image as ImageIcon,
+  MessageSquareQuote
 } from "lucide-react";
 
 interface Product {
@@ -253,6 +254,13 @@ export default function AdminDashboard() {
             description="Manage admin users and permissions"
             href="/admin/users"
             icon={<Users className="w-5 h-5 text-amber-700" />}
+            iconBg="bg-amber-50"
+          />
+          <ActionCard
+            title="Client Testimonials"
+            description="Manage customer reviews and feedback"
+            href="/admin/testimonials"
+            icon={<MessageSquareQuote className="w-5 h-5 text-gold" />}
             iconBg="bg-amber-50"
           />
         </div>
