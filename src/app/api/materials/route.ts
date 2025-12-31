@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     try {
         const { data, error } = await supabaseServer
             .from("materials")
-            .select("id, name, description")
+            .select("id, name")
             .order("name");
 
         if (error) {
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
         const { data, error } = await supabaseServer
             .from("materials")
-            .insert({ name, description })
+            .insert({ name })
             .select()
             .single();
 
@@ -70,7 +70,7 @@ export async function PUT(req: NextRequest) {
 
         const { data, error } = await supabaseServer
             .from("materials")
-            .update({ name, description })
+            .update({ name })
             .eq("id", id)
             .select()
             .single();

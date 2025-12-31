@@ -1,5 +1,6 @@
 import ProductInfo from "@/src/components/ProductInfo"
 import { headers } from "next/headers";
+import { Metadata } from "next";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -19,6 +20,27 @@ async function getProduct(id: string) {
     console.error("Fetch product error:", error);
     return null;
   }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const product = await getProduct(id);
+
+  if (!product) {
+    return {
+      title: "Product Not Found",
+    };
+  }
+
+  return {
+    title: product.name,
+    description: product.description?.substring(0, 160) || `Buy ${product.name} from Grazie.lk. Premium pooja items delivered island-wide.`,
+    openGraph: {
+      title: product.name,
+      description: product.description?.substring(0, 160),
+      images: product.images?.[0]?.image_url?.[0] ? [product.images[0].image_url[0]] : [],
+    },
+  };
 }
 
 export default async function ProductDetailsPage({ params }: Props) {

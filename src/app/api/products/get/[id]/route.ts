@@ -19,6 +19,7 @@ export async function GET(
       category,
       Category (id, Category),
       material,
+      materials (id, name),
       delivey_days,
       images (
         id,

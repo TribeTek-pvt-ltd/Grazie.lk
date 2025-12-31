@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
         /* ---------- FETCH CATEGORIES ---------- */
         const { data, error } = await supabaseServer
             .from("Category")
-            .select("id, Category, description")
+            .select("id, Category")
             .order("Category");
 
         if (error) {
@@ -47,8 +47,7 @@ export async function POST(req: NextRequest) {
         const { data, error } = await supabaseServer
             .from("Category")
             .insert({
-                Category: name,
-                description: description
+                Category: name
             })
             .select()
             .single();
@@ -81,8 +80,7 @@ export async function PUT(req: NextRequest) {
         const { data, error } = await supabaseServer
             .from("Category")
             .update({
-                Category: name,
-                description: description
+                Category: name
             })
             .eq("id", id)
             .select()

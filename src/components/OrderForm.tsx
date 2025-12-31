@@ -52,7 +52,6 @@ Total Amount: Rs. ${subtotal.toLocaleString()}
 
 Special Notes: ${note.trim() || "None"}
 
-Thank you for your trust and devotion. We will contact you soon to confirm 
     `.trim();
   };
 

@@ -18,6 +18,7 @@ interface Product {
   description: string;
   images?: { image_url: string[] }[];
   material?: string;
+  materials?: { name: string };
   stock: number;
   delivey_days: number;
   sizes?: {
@@ -133,12 +134,14 @@ export default function ProductDetail({ product }: { product: Product }) {
               </h1>
 
               <div className="flex flex-wrap gap-4 mb-8">
-                <span className="px-6 py-3 bg-gold/20 text-gold  text-sm font-medium border border-gold/40">
-                  {product.Category?.Category || product.category}
-                </span>
-                {product.material && (
+                {(product.Category?.Category || (product.category && product.category !== "General")) && (
+                  <span className="px-6 py-3 bg-gold/20 text-gold  text-sm font-medium border border-gold/40">
+                    {product.Category?.Category || product.category}
+                  </span>
+                )}
+                {product.materials?.name && (
                   <span className="px-6 py-3 bg-accent/10 text-accent  text-sm font-medium">
-                    {product.material}
+                    {product.materials.name}
                   </span>
                 )}
               </div>

@@ -9,8 +9,6 @@ import EmptyState from "@/src/components/EmptyState";
 interface Material {
     id: string;
     name: string;
-    description?: string;
-    created_at: string;
 }
 
 export default function MaterialsPage() {
@@ -19,7 +17,7 @@ export default function MaterialsPage() {
     const [loading, setLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
-    const [newMaterial, setNewMaterial] = useState({ name: "", description: "" });
+    const [newMaterial, setNewMaterial] = useState({ name: "" });
     const [editingMaterial, setEditingMaterial] = useState<Material | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -54,7 +52,7 @@ export default function MaterialsPage() {
             });
 
             if (res.ok) {
-                setNewMaterial({ name: "", description: "" });
+                setNewMaterial({ name: "" });
                 setShowAddModal(false);
                 fetchMaterials();
             } else {
@@ -84,7 +82,6 @@ export default function MaterialsPage() {
                 body: JSON.stringify({
                     id: editingMaterial.id,
                     name: editingMaterial.name,
-                    description: editingMaterial.description,
                 }),
             });
 
@@ -216,9 +213,6 @@ export default function MaterialsPage() {
                                     </div>
                                 </div>
                                 <h3 className="text-lg font-bold text-gray-900 mb-1">{material.name}</h3>
-                                {material.description && (
-                                    <p className="text-sm text-gray-600">{material.description}</p>
-                                )}
                             </div>
                         </div>
                     ))}
@@ -249,18 +243,6 @@ export default function MaterialsPage() {
                                     autoFocus
                                 />
                             </div>
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-2 tracking-wide uppercase">
-                                    Description (Optional)
-                                </label>
-                                <textarea
-                                    value={newMaterial.description}
-                                    onChange={(e) => setNewMaterial({ ...newMaterial, description: e.target.value })}
-                                    placeholder="Brief description of this material"
-                                    rows={3}
-                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold focus:border-transparent resize-none transition-all outline-none"
-                                />
-                            </div>
                         </div>
                         <div className="bg-gray-50 px-8 py-6 flex gap-3">
                             <button
@@ -273,7 +255,7 @@ export default function MaterialsPage() {
                             <button
                                 onClick={() => {
                                     setShowAddModal(false);
-                                    setNewMaterial({ name: "", description: "" });
+                                    setNewMaterial({ name: "" });
                                 }}
                                 disabled={submitting}
                                 className="px-6 py-3 border border-gray-200 rounded-xl font-bold text-gray-600 hover:bg-white transition-all outline-none"
@@ -307,18 +289,6 @@ export default function MaterialsPage() {
                                     placeholder="e.g., Solid Wood"
                                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold focus:border-transparent transition-all outline-none"
                                     autoFocus
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-2 tracking-wide uppercase">
-                                    Description (Optional)
-                                </label>
-                                <textarea
-                                    value={editingMaterial.description || ""}
-                                    onChange={(e) => setEditingMaterial({ ...editingMaterial, description: e.target.value })}
-                                    placeholder="Brief description of this material"
-                                    rows={3}
-                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold focus:border-transparent resize-none transition-all outline-none"
                                 />
                             </div>
                         </div>

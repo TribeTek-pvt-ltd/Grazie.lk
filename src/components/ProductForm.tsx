@@ -241,7 +241,7 @@ export default function ProductForm({
                     >
                         <option value="">Select material</option>
                         {materials.map((mat) => (
-                            <option key={mat.id} value={mat.name}>
+                            <option key={mat.id} value={mat.id}>
                                 {mat.name}
                             </option>
                         ))}

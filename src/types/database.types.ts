@@ -73,6 +73,20 @@ export interface Database {
                     Category?: string
                 }
             }
+            materials: {
+                Row: {
+                    id: string
+                    name: string
+                }
+                Insert: {
+                    id?: string
+                    name: string
+                }
+                Update: {
+                    id?: string
+                    name?: string
+                }
+            }
             testimonials: {
                 Row: {
                     id: string

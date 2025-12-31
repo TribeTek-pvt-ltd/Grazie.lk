@@ -1,10 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { products } from "@/src/data/products";
-
 export default function ProductGridShowcase() {
-  const allImages = products.map((p) => p.image);
+  const localImages = [
+    "/products/1.jpeg",
+    "/products/2.jpeg",
+    "/products/3.jpeg", "/products/4.jpeg",
+    "/products/5.jpeg",
+    "/products/6.jpeg", "/products/9.jpeg",
+    "/products/7.jpeg",
+    "/products/10.jpeg",
+    "/products/8.jpeg",
+
+  ];
+
+  const allImages = localImages;
 
   const NUM_IMAGES = 9;
 
@@ -21,7 +31,7 @@ export default function ProductGridShowcase() {
     setDisplayImages(initialImages);
 
     // Generate random heights and watermarks once on client
-    const initialHeights = initialImages.map(() => 
+    const initialHeights = initialImages.map(() =>
       Math.random() < 0.6 ? "row-span-1" : "row-span-2"
     );
     setHeights(initialHeights);

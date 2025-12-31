@@ -27,6 +27,7 @@ export async function GET(req: NextRequest) {
       category,
       Category (id, Category),
       material,
+      materials (id, name),
       stock,
       delivey_days,
       images (

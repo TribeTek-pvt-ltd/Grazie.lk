@@ -41,7 +41,7 @@ export default function Footer() {
             <h3 className="text-lg font-heading font-medium text-soft">Connect With Us</h3>
             <div className="flex flex-col space-y-3">
               <a
-                href="https://www.instagram.com/grazie.lk" // Update with real link
+                href=" https://www.instagram.com/grazie.lk" // Update with real link
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-accent/80 hover:text-gold transition-colors duration-300 flex items-center gap-2"
@@ -50,7 +50,7 @@ export default function Footer() {
                 Instagram
               </a>
               <a
-                href="https://www.facebook.com/grazie.lk" // Update with real link
+                href="https://www.facebook.com/share/1Ar9X6q3F1/?mibextid=wwXIfr" // Update with real link
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-accent/80 hover:text-gold transition-colors duration-300 flex items-center gap-2"
@@ -59,11 +59,11 @@ export default function Footer() {
                 Facebook
               </a>
               <a
-                href="mailto:info@grazie.lk"
+                href="mailto:grazie.lk17@gmail.com"
                 className="text-accent/80 hover:text-gold transition-colors duration-300 flex items-center gap-2"
               >
                 <Mail size={18} />
-                info@grazie.lk
+                grazie.lk17@gmail.com
               </a>
             </div>
           </div>
@@ -73,7 +73,7 @@ export default function Footer() {
             <h3 className="text-lg font-heading font-medium text-soft">Get In Touch</h3>
             <div className="flex flex-col space-y-3">
               <a
-                href="https://wa.me/947XXXXXXXXX" // Update with your number
+                href="https://wa.me/94767764438"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-accent/80 hover:text-gold transition-colors duration-300 flex items-center gap-2"

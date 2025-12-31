@@ -9,8 +9,6 @@ import EmptyState from "@/src/components/EmptyState";
 interface Category {
     id: string;
     name: string;
-    description?: string;
-    created_at: string;
 }
 
 export default function CategoriesPage() {
@@ -19,7 +17,7 @@ export default function CategoriesPage() {
     const [loading, setLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
-    const [newCategory, setNewCategory] = useState({ name: "", description: "" });
+    const [newCategory, setNewCategory] = useState({ name: "" });
     const [editingCategory, setEditingCategory] = useState<Category | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -54,7 +52,7 @@ export default function CategoriesPage() {
             });
 
             if (res.ok) {
-                setNewCategory({ name: "", description: "" });
+                setNewCategory({ name: "" });
                 setShowAddModal(false);
                 fetchCategories();
             } else {
@@ -84,7 +82,6 @@ export default function CategoriesPage() {
                 body: JSON.stringify({
                     id: editingCategory.id,
                     name: editingCategory.name,
-                    description: editingCategory.description,
                 }),
             });
 
@@ -216,9 +213,6 @@ export default function CategoriesPage() {
                                     </div>
                                 </div>
                                 <h3 className="text-lg font-bold text-gray-900 mb-1">{category.name}</h3>
-                                {category.description && (
-                                    <p className="text-sm text-gray-600">{category.description}</p>
-                                )}
                             </div>
                         </div>
                     ))}
@@ -249,18 +243,6 @@ export default function CategoriesPage() {
                                     autoFocus
                                 />
                             </div>
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-2 tracking-wide uppercase">
-                                    Description (Optional)
-                                </label>
-                                <textarea
-                                    value={newCategory.description}
-                                    onChange={(e) => setNewCategory({ ...newCategory, description: e.target.value })}
-                                    placeholder="Brief description of this category"
-                                    rows={3}
-                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold focus:border-transparent resize-none transition-all outline-none"
-                                />
-                            </div>
                         </div>
                         <div className="bg-gray-50 px-8 py-6 flex gap-3">
                             <button
@@ -273,7 +255,7 @@ export default function CategoriesPage() {
                             <button
                                 onClick={() => {
                                     setShowAddModal(false);
-                                    setNewCategory({ name: "", description: "" });
+                                    setNewCategory({ name: "" });
                                 }}
                                 disabled={submitting}
                                 className="px-6 py-3 border border-gray-200 rounded-xl font-bold text-gray-600 hover:bg-white transition-all outline-none"
@@ -307,18 +289,6 @@ export default function CategoriesPage() {
                                     placeholder="e.g., Furniture"
                                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold focus:border-transparent transition-all outline-none"
                                     autoFocus
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-2 tracking-wide uppercase">
-                                    Description (Optional)
-                                </label>
-                                <textarea
-                                    value={editingCategory.description || ""}
-                                    onChange={(e) => setEditingCategory({ ...editingCategory, description: e.target.value })}
-                                    placeholder="Brief description of this category"
-                                    rows={3}
-                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold focus:border-transparent resize-none transition-all outline-none"
                                 />
                             </div>
                         </div>

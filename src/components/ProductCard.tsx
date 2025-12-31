@@ -13,6 +13,8 @@ interface Product {
   image?: string | string[];
   images?: Array<{ image_url: string[] }>;
   description: string;
+  material?: string;
+  materials?: { name: string };
 }
 
 interface Props {
