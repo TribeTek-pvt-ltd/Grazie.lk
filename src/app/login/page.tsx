@@ -93,12 +93,12 @@ export default function AdminLoginPage() {
           {loading ? "Logging in..." : "Login"}
         </button>
 
-        <div className="text-center text-sm text-gray-600 mt-4">
+        {/* <div className="text-center text-sm text-gray-600 mt-4">
           Don't have an account?{" "}
           <Link href="/register" className="text-gold hover:underline">
             Register here
           </Link>
-        </div>
+        </div> */}
       </form>
     </div>
   );
