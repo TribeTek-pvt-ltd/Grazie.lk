@@ -82,15 +82,15 @@ export default function ProductGridShowcase() {
   return (
     <section className="w-full h-[70vh] bg-soft flex items-center justify-center overflow-hidden">
       <div className="w-full h-full max-w-7xl px-6 md:px-12 lg:px-20 flex items-center justify-center">
-        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5 auto-rows-[90px] md:auto-rows-[130px] w-full h-fit">
+        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 auto-rows-[90px] md:auto-rows-[130px] w-full h-fit">
           {displayImages.map((img, index) => (
             <div
               key={index} // Stable key based on array position
               className={`
-                relative overflow-hidden shadow-md hover:shadow-xl
-                border border-transparent hover:border-gold/30
-                transition-all duration-1000 ease-out
-                group ${heights[index] || "row-span-1"}
+                relative overflow-hidden shadow-lg hover:shadow-2xl
+                border border-white/50 hover:border-gold/50
+                transition-all duration-700 ease-out
+                group ${heights[index] || "row-span-1"} rounded-md
               `}
             >
               <img

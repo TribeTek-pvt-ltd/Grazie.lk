@@ -38,7 +38,7 @@ export default function ProductCard({ product, isAdmin = false, onDelete }: Prop
   }
 
   return (
-    <div className="group relative bg-soft overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 ease-in-out  hover:border-gold w-full flex flex-col h-full">
+    <div className="group relative bg-soft overflow-hidden rounded-sm shadow-md hover:shadow-xl transition-all duration-500 ease-in-out border border-transparent hover:border-gold w-full flex flex-col h-full">
       {/* Image with responsive aspect ratio */}
       <Link href={isAdmin ? `/admin/products/${product.id}/edit` : `/products/${product.id}`} className="block w-full overflow-hidden relative" style={{ paddingTop: "70%" }}>
         <img
@@ -77,13 +77,13 @@ export default function ProductCard({ product, isAdmin = false, onDelete }: Prop
             <>
               <Link
                 href={`/admin/products/${product.id}/edit`}
-                className="flex-1 text-center py-2 px-2 bg-amber-50 text-amber-700 text-sm font-medium rounded hover:bg-amber-100 transition"
+                className="flex-1 text-center py-2 px-2 bg-amber-50 text-amber-700 text-sm font-medium rounded-sm hover:bg-amber-100 transition"
               >
                 Edit
               </Link>
               <button
                 onClick={() => onDelete?.(product.id)}
-                className="p-2 bg-red-50 text-red-600 rounded hover:bg-red-100 transition"
+                className="p-2 bg-red-50 text-red-600 rounded-sm hover:bg-red-100 transition"
               >
                 <Trash2 size={18} />
               </button>
@@ -92,13 +92,13 @@ export default function ProductCard({ product, isAdmin = false, onDelete }: Prop
             <>
               <Link
                 href={`/products/${product.id}`}
-                className="flex-1 text-center py-1 px-4 border border-gold text-dark font-medium  hover:bg-gold hover:text-soft transition-colors duration-300"
+                className="flex-1 text-center py-1 px-4 border border-gold text-dark font-medium rounded-sm hover:bg-gold hover:text-soft transition-colors duration-300"
               >
                 View
               </Link>
               <button
                 onClick={() => setShowOrderModal(true)}
-                className="flex-1 text-center py-2 px-4 bg-gold text-soft font-semibold hover:bg-dark transition shadow-md"
+                className="flex-1 text-center py-2 px-4 bg-gold text-soft font-semibold rounded-sm hover:bg-dark transition shadow-md"
               >
                 Order
               </button>
