@@ -108,7 +108,7 @@ export default function ProductForm({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg p-8 max-w-3xl">
+        <form onSubmit={handleSubmit} className="bg-white rounded-md shadow-lg p-8 max-w-3xl">
             <h2 className="text-2xl font-bold mb-6 text-gray-800">Product Details</h2>
 
             {error && (
@@ -129,7 +129,7 @@ export default function ProductForm({
                         required
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent transition"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:ring-2 focus:ring-gold focus:border-transparent transition"
                         placeholder="Enter product name"
                         disabled={loading}
                     />
@@ -146,7 +146,7 @@ export default function ProductForm({
                         value={formData.description}
                         onChange={handleChange}
                         rows={4}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent transition resize-none"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:ring-2 focus:ring-gold focus:border-transparent transition resize-none"
                         placeholder="Enter product description"
                         disabled={loading}
                     />
@@ -165,7 +165,7 @@ export default function ProductForm({
                         step="0.01"
                         value={formData.price}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent transition"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:ring-2 focus:ring-gold focus:border-transparent transition"
                         placeholder="0.00"
                         disabled={loading}
                     />
@@ -183,7 +183,7 @@ export default function ProductForm({
                         min="0"
                         value={formData.stock}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent transition"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:ring-2 focus:ring-gold focus:border-transparent transition"
                         placeholder="0"
                         disabled={loading}
                     />
@@ -200,7 +200,7 @@ export default function ProductForm({
                         min="0"
                         value={formData.delivey_days}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent transition"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:ring-2 focus:ring-gold focus:border-transparent transition"
                         placeholder="e.g. 3"
                         disabled={loading}
                     />
@@ -215,7 +215,7 @@ export default function ProductForm({
                         name="category"
                         value={formData.category}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent transition"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:ring-2 focus:ring-gold focus:border-transparent transition"
                         disabled={loading}
                     >
                         <option value="">Select category</option>
@@ -236,7 +236,7 @@ export default function ProductForm({
                         name="material"
                         value={formData.material}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent transition"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:ring-2 focus:ring-gold focus:border-transparent transition"
                         disabled={loading}
                     >
                         <option value="">Select material</option>
@@ -287,7 +287,7 @@ export default function ProductForm({
                 <button
                     type="submit"
                     disabled={loading}
-                    className="flex-1 bg-gold text-white py-3 px-6 rounded-lg font-semibold hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 bg-gold text-white py-3 px-6 rounded-sm font-semibold hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {loading ? "Processing..." : submitLabel}
                 </button>
@@ -295,7 +295,7 @@ export default function ProductForm({
                     type="button"
                     onClick={() => router.back()}
                     disabled={loading}
-                    className="px-6 py-3 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition disabled:opacity-50"
+                    className="px-6 py-3 border border-gray-300 rounded-sm font-semibold text-gray-700 hover:bg-gray-50 transition disabled:opacity-50"
                 >
                     Cancel
                 </button>

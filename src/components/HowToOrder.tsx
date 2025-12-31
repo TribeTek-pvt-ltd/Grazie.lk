@@ -91,7 +91,7 @@ export default function HowToOrder() {
         <div className="text-center mt-16">
           <Link
             href="/products"
-            className="inline-flex items-center gap-3 bg-gold text-soft px-10 py-5 rounded-xl font-semibold text-lg hover:bg-dark hover:shadow-2xl transition-all duration-500 shadow-xl"
+            className="inline-flex items-center gap-3 bg-gold text-soft px-10 py-5 rounded-md font-semibold text-lg hover:bg-dark hover:shadow-2xl transition-all duration-500 shadow-xl"
           >
             Start Shopping Now
           </Link>

@@ -51,7 +51,7 @@ export default function TestimonialSection() {
                     {testimonials.map((testimonial, index) => (
                         <div
                             key={testimonial.id}
-                            className={`group bg-white p-8 rounded-2xl shadow-sm border border-gold/10 hover:border-gold/30 transition-all duration-500 hover:-translate-y-2 flex flex-col ${index % 2 === 1 ? "md:translate-y-6" : ""
+                            className={`group bg-white p-8 rounded-sm shadow-sm border border-gold/10 hover:border-gold/30 transition-all duration-500 hover:-translate-y-2 flex flex-col ${index % 2 === 1 ? "md:translate-y-6" : ""
                                 }`}
                         >
                             <div className="flex items-center gap-1 text-gold mb-6">
@@ -71,7 +71,7 @@ export default function TestimonialSection() {
                             </div>
 
                             <div className="flex items-center gap-4 mt-auto border-t border-gray-50 pt-6">
-                                <div className="w-12 h-12 rounded-full bg-amber-50 border border-gold/20 flex items-center justify-center overflow-hidden flex-shrink-0 animate-pulse-slow">
+                                <div className="w-12 h-12 rounded-md bg-amber-50 border border-gold/20 flex items-center justify-center overflow-hidden flex-shrink-0 animate-pulse-slow">
                                     <span className="text-gold font-heading text-lg font-bold">
                                         {testimonial.name[0]}
                                     </span>

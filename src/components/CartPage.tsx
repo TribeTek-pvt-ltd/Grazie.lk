@@ -97,7 +97,7 @@ export default function CartPage() {
           </p>
           <Link
             href="/products"
-            className="inline-flex items-center gap-3 bg-gold text-soft px-10 py-5 rounded-xl font-bold text-lg shadow-xl hover:bg-dark transition"
+            className="inline-flex items-center gap-3 bg-gold text-soft px-10 py-5 rounded-md font-bold text-lg shadow-xl hover:bg-dark transition"
           >
             Browse Products
           </Link>
@@ -225,7 +225,7 @@ export default function CartPage() {
 
               <button
                 onClick={() => setShowOrderModal(true)}
-                className="w-full block text-center py-6 px-8 bg-gold text-soft font-bold text-xl rounded-xl hover:bg-dark transition-all shadow-2xl"
+                className="w-full block text-center py-6 px-8 bg-gold text-soft font-bold text-xl rounded-md hover:bg-dark transition-all shadow-2xl"
               >
                 💬 Place Order via WhatsApp
               </button>

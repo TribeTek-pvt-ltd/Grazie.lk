@@ -92,7 +92,13 @@ export default function Footer() {
         <div className="pt-8 border-t border-gold/20">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-accent/70">
             <p>&copy; {new Date().getFullYear()} Grazie.lk. All rights reserved.</p>
-            <p className="text-accent/60">Crafted with devotion in Sri Lanka</p>
+            <div className="flex flex-col md:flex-row gap-2 md:gap-4 items-center">
+              <p className="text-accent/60">Crafted with devotion in Sri Lanka</p>
+              <span className="hidden md:block text-gold/30">|</span>
+              <p className="text-accent/60 text-xs">
+                Designed and Developed by <span className="text-gold">TribeTek</span>
+              </p>
+            </div>
           </div>
         </div>
       </div>
