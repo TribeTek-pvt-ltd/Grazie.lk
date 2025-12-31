@@ -1,13 +1,17 @@
 import { NextResponse } from "next/server";
-import { createSupabaseServerClient, requireAdmin } from "@/src/lib/supabaseAuth";
+import { requireAdmin } from "@/src/lib/supabaseAuth";
+import { supabaseServer } from "@/src/lib/supabaseServer";
 
 export async function POST(request: Request) {
     try {
+        // 1. Verify admin role (uses cookie session)
         await requireAdmin();
-        const supabase = await createSupabaseServerClient();
+
+        // 2. Parse request body
         const body = await request.json();
 
-        const { data, error } = await supabase
+        // 3. Create testimonial using service role client (bypasses RLS)
+        const { data, error } = await supabaseServer
             .from("testimonials")
             .insert([
                 {
@@ -19,10 +23,17 @@ export async function POST(request: Request) {
             ])
             .select();
 
-        if (error) throw error;
+        if (error) {
+            console.error("Testimonial creation error:", error);
+            throw error;
+        }
 
         return NextResponse.json({ data: data[0] });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: error.message.includes("Unauthorized") ? 401 : 500 });
+        console.error("Testimonial create route failure:", error);
+        return NextResponse.json(
+            { error: error.message || "Failed to create testimonial" },
+            { status: error.message?.includes("Unauthorized") ? 401 : 500 }
+        );
     }
 }

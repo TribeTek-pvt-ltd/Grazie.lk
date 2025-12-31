@@ -1,19 +1,26 @@
 import { NextResponse } from "next/server";
-import { createSupabaseServerClient, requireAdmin } from "@/src/lib/supabaseAuth";
+import { requireAdmin } from "@/src/lib/supabaseAuth";
+import { supabaseServer } from "@/src/lib/supabaseServer";
 
 export async function GET() {
     try {
         await requireAdmin();
-        const supabase = await createSupabaseServerClient();
 
-        const { data, error } = await supabase
+        const { data, error } = await supabaseServer
             .from("testimonials")
             .select("*");
 
-        if (error) throw error;
+        if (error) {
+            console.error("Testimonial list error:", error);
+            throw error;
+        }
 
         return NextResponse.json({ data });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: error.message.includes("Unauthorized") ? 401 : 500 });
+        console.error("Testimonial list route failure:", error);
+        return NextResponse.json(
+            { error: error.message || "Failed to list testimonials" },
+            { status: error.message?.includes("Unauthorized") ? 401 : 500 }
+        );
     }
 }

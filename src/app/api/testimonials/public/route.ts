@@ -1,19 +1,21 @@
 import { NextResponse } from "next/server";
-import { createSupabaseServerClient } from "@/src/lib/supabaseAuth";
+import { supabaseServer } from "@/src/lib/supabaseServer";
 
 export async function GET() {
     try {
-        const supabase = await createSupabaseServerClient();
-
-        const { data, error } = await supabase
+        const { data, error } = await supabaseServer
             .from("testimonials")
             .select("*")
             .eq("isActive", true);
 
-        if (error) throw error;
+        if (error) {
+            console.error("Public testimonial fetch error:", error);
+            throw error;
+        }
 
         return NextResponse.json({ data });
     } catch (error: any) {
+        console.error("Public testimonial route failure:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
