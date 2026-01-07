@@ -41,7 +41,7 @@ export default function HowToOrder() {
   ];
 
   return (
-    <section className="w-full mt-12 py-16 md:py-24 bg-soft">
+    <section className="w-full py-16 md:py-24 bg-soft">
       <div className="container mx-auto px-6 md:px-12 lg:px-20">
         {/* Section Heading */}
         <div className="text-center mb-16">

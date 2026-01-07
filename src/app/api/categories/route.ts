@@ -8,9 +8,9 @@ export async function GET(req: NextRequest) {
     try {
         /* ---------- FETCH CATEGORIES ---------- */
         const { data, error } = await supabaseServer
-            .from("Category")
-            .select("id, Category")
-            .order("Category");
+            .from("category")
+            .select("id, category")
+            .order("category");
 
         if (error) {
             console.error("Fetch categories error:", error);
@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
         // Map Category column to name for compatibility
         const mappedData = data.map((cat: any) => ({
             ...cat,
-            name: cat.Category
+            name: cat.category
         }));
 
         return NextResponse.json({ data: mappedData });
@@ -45,9 +45,9 @@ export async function POST(req: NextRequest) {
         }
 
         const { data, error } = await supabaseServer
-            .from("Category")
+            .from("category")
             .insert({
-                Category: name
+                category: name
             })
             .select()
             .single();
@@ -78,9 +78,9 @@ export async function PUT(req: NextRequest) {
         }
 
         const { data, error } = await supabaseServer
-            .from("Category")
+            .from("category")
             .update({
-                Category: name
+                category: name
             })
             .eq("id", id)
             .select()
@@ -113,7 +113,7 @@ export async function DELETE(req: NextRequest) {
         }
 
         const { error } = await supabaseServer
-            .from("Category")
+            .from("category")
             .delete()
             .eq("id", id);
 

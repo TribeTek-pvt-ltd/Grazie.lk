@@ -17,7 +17,7 @@ export async function PATCH(
                 name: body.name,
                 content: body.content,
                 rating: body.rating,
-                isActive: body.isActive,
+                isactive: body.isActive,
             })
             .eq("id", id)
             .select();

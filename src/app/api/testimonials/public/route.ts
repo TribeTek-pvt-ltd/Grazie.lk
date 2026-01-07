@@ -6,7 +6,7 @@ export async function GET() {
         const { data, error } = await supabaseServer
             .from("testimonials")
             .select("*")
-            .eq("isActive", true);
+            .eq("isactive", true);
 
         if (error) {
             console.error("Public testimonial fetch error:", error);

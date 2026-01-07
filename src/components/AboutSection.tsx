@@ -52,7 +52,7 @@ export default function AboutSection() {
             <img
               src="/about/logo.png"
               alt="Pooja items"
-              className="relative z-10 rounded-md shadow-xl object-cover w-full h-[420px]"
+              className="relative z-10 rounded-md shadow-xl object-cover w-full h-[280px] md:h-[420px]"
             />
           </div>
 

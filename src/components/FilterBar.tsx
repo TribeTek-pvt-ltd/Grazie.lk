@@ -172,12 +172,6 @@ export default function FilterBar({
         </button>
 
         <div className="flex items-center gap-8">
-          <div className="flex flex-col items-end">
-            <span className="text-[10px] text-accent uppercase tracking-widest font-bold">Discovery</span>
-            <span className="text-dark font-heading text-lg">
-              {resultsCount} <span className="text-accent font-body text-sm italic">Items found</span>
-            </span>
-          </div>
           <div className="h-10 w-px bg-gold/20 hidden md:block"></div>
           <div className="hidden md:flex flex-col items-end">
             <span className="text-[10px] text-accent uppercase tracking-widest font-bold">Currency</span>

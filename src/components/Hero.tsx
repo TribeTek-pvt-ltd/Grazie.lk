@@ -1,11 +1,11 @@
 import Link from "next/link";
+import { getWhatsAppLink } from "../config/constants";
 
 export default function Hero() {
   return (
     <section className="relative w-full bg-soft overflow-hidden">
       {/* Rich decorative background */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-gold/10 via-base/20 to-transparent"></div>
-      <div className="absolute top-0 left-0 w-full h-full bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay"></div>
 
       <div className="relative container mx-auto px-6 md:px-16 flex flex-col items-center text-center py-20 md:py-32 space-y-8">
         {/* Heading */}
@@ -28,20 +28,24 @@ export default function Hero() {
         <div className="flex flex-col sm:flex-row gap-5 justify-center mt-4">
           <Link
             href="/products"
-            className="px-12 py-5 bg-dark text-soft rounded-md font-semibold text-lg hover:bg-gold hover:text-white transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1"
+            className="px-12 py-5 bg-gold text-soft rounded-md font-semibold text-lg hover:bg-dark hover:text-white transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1"
           >
             Shop Now
           </Link>
-          <Link
-            href="/contact"
-            className="px-12 py-5 border-2 border-dark/10 text-dark bg-white/50 backdrop-blur-sm rounded-md font-semibold text-lg hover:bg-dark hover:text-soft transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-1"
+
+          <a
+            href={getWhatsAppLink("Hello Grazie.lk, I'd like to ask about...")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-12 py-5 border-2 border-dark/10 text-soft bg-dark backdrop-blur-sm rounded-md font-semibold text-lg hover:bg-gold hover:text-soft transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-1"
           >
             Contact Us
-          </Link>
+          </a>
+
         </div>
 
         {/* Optional: subtle tagline */}
-        <p className="text-accent/60 text-sm tracking-[0.2em] uppercase font-medium mt-8">
+        <p className="text-accent/60 text-sm tracking-[0.2em] uppercase font-medium mt-4">
           Handcrafted & curated for your sacred moments
         </p>
       </div>

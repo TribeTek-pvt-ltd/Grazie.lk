@@ -59,7 +59,7 @@ export default function ProductCard({ product, isAdmin = false, onDelete }: Prop
 
         {/* Category */}
         <p className="text-accent text-xs sm:text-sm mb-2 uppercase tracking-wide font-medium">
-          {product.Category?.Category || product.category || "General"}
+          {product.Category?.Category || (typeof product.category === 'object' && product.category !== null ? (product.category as any).category : product.category) || "General"}
         </p>
 
         {/* Subtle gold divider */}
@@ -139,7 +139,7 @@ export default function ProductCard({ product, isAdmin = false, onDelete }: Prop
                   name: product.name,
                   price: product.price,
                   quantity: 1,
-                  category: product.Category?.Category || product.category
+                  category: product.Category?.Category || (typeof product.category === 'object' && product.category !== null ? (product.category as any).category : product.category)
                 }]}
                 onOrderSuccess={() => setShowOrderModal(false)}
               />

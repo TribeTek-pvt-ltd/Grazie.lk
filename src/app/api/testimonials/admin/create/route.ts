@@ -18,7 +18,7 @@ export async function POST(request: Request) {
                     name: body.name,
                     content: body.content,
                     rating: body.rating,
-                    isActive: body.isActive ?? true,
+                    isactive: body.isActive ?? true,
                 },
             ])
             .select();

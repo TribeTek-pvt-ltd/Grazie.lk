@@ -104,8 +104,8 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-base pb-20">
-      <div className="bg-dark py-12 px-4 shadow-2xl border-b border-gold/30">
-        <div className="max-w-7xl mx-auto text-center">
+      <div className=" py-6 px-4  ">
+        <div className=" text-center">
           <h1 className="text-4xl font-bold text-soft mb-2 font-heading tracking-wide">Sacred Collection</h1>
           <p className="text-accent italic font-body">Discover curated premium artifacts for your spiritual journey</p>
         </div>

@@ -3,12 +3,12 @@ import { Instagram, Facebook, Mail, Phone } from "lucide-react"; // Optional: in
 
 export default function Footer() {
   return (
-    <footer className="bg-dark text-soft  py-16">
+    <footer className="bg-dark text-soft py-8 md:py-16">
       <div className="container mx-auto px-6 md:px-12 lg:px-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-8 md:mb-12">
           {/* Brand / About */}
-          <div className="space-y-6">
-            <h2 className="text-3xl font-heading font-semibold text-gold tracking-wide">
+          <div className="space-y-4 md:space-y-6">
+            <h2 className="text-2xl md:text-3xl font-heading font-semibold text-gold tracking-wide">
               Grazie.lk
             </h2>
             <p className="text-accent/80 text-sm leading-relaxed max-w-xs">
@@ -18,9 +18,9 @@ export default function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-heading font-medium text-soft">Quick Links</h3>
-            <div className="flex flex-col space-y-3">
+          <div className="space-y-3 md:space-y-4">
+            <h3 className="text-base md:text-lg font-heading font-medium text-soft">Quick Links</h3>
+            <div className="flex flex-col space-y-2 md:space-y-3 text-sm md:text-base">
               <Link href="/products" className="text-accent/80 hover:text-gold transition-colors duration-300">
                 All Products
               </Link>
@@ -37,9 +37,9 @@ export default function Footer() {
           </div>
 
           {/* Connect / Social */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-heading font-medium text-soft">Connect With Us</h3>
-            <div className="flex flex-col space-y-3">
+          <div className="space-y-3 md:space-y-4">
+            <h3 className="text-base md:text-lg font-heading font-medium text-soft">Connect With Us</h3>
+            <div className="flex flex-col space-y-2 md:space-y-3 text-sm md:text-base">
               <a
                 href=" https://www.instagram.com/grazie.lk" // Update with real link
                 target="_blank"
@@ -69,9 +69,9 @@ export default function Footer() {
           </div>
 
           {/* Contact / WhatsApp */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-heading font-medium text-soft">Get In Touch</h3>
-            <div className="flex flex-col space-y-3">
+          <div className="space-y-3 md:space-y-4">
+            <h3 className="text-base md:text-lg font-heading font-medium text-soft">Get In Touch</h3>
+            <div className="flex flex-col space-y-2 md:space-y-3 text-sm md:text-base">
               <a
                 href="https://wa.me/94767764438"
                 target="_blank"
@@ -81,7 +81,7 @@ export default function Footer() {
                 <Phone size={18} />
                 WhatsApp Us
               </a>
-              <p className="text-accent/60 text-sm">
+              <p className="text-accent/60 text-xs md:text-sm">
                 We're here to help with your orders and inquiries.
               </p>
             </div>
@@ -89,14 +89,14 @@ export default function Footer() {
         </div>
 
         {/* Divider & Copyright */}
-        <div className="pt-8 border-t border-gold/20">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-accent/70">
+        <div className="pt-6 md:pt-8 border-t border-gold/20">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4 text-xs md:text-sm text-accent/70 text-center md:text-left">
             <p>&copy; {new Date().getFullYear()} Grazie.lk. All rights reserved.</p>
-            <div className="flex flex-col md:flex-row gap-2 md:gap-4 items-center">
+            <div className="flex flex-col md:flex-row gap-1 md:gap-4 items-center">
               <p className="text-accent/60">Crafted with devotion in Sri Lanka</p>
               <span className="hidden md:block text-gold/30">|</span>
-              <p className="text-accent/60 text-xs">
-                Designed and Developed by <span className="text-gold">TribeTek</span>
+              <p className="text-accent/60 text-[10px] md:text-xs">
+                Designed and Developed by <a className="text-gold" href="https://tribetek.info" target="_blank">TribeTek</a>
               </p>
             </div>
           </div>

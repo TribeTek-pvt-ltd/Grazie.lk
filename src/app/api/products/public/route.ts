@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
         price,
         stock,
         category,
-        Category (id, Category),
+        category (id, category),
         material,
         materials (id, name),
         delivey_days,
@@ -33,8 +33,13 @@ export async function GET(req: NextRequest) {
         }
 
         return NextResponse.json({ products: data });
-    } catch (err) {
-        console.error("Fetch public products error:", err);
+    } catch (err: any) {
+        console.error("Fetch public products error:", {
+            message: err.message,
+            details: err.details,
+            hint: err.hint,
+            code: err.code
+        });
         return NextResponse.json(
             { error: "Internal server error" },
             { status: 500 }

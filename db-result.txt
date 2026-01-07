@@ -1,0 +1,10 @@
+Testing table: category
+Success! Found 1 rows in category
+Sample row keys: ["category","id"]
+Testing table: ProductCategory
+Error querying ProductCategory: Could not find the table 'public.ProductCategory' in the schema cache
+Testing table: product_categories
+Error querying product_categories: Could not find the table 'public.product_categories' in the schema cache
+Testing table: materials
+Success! Found 1 rows in materials
+Sample row keys: ["id","name"]

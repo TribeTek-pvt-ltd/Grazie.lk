@@ -17,7 +17,7 @@ export async function GET(
       price,
       stock,
       category,
-      Category (id, Category),
+      category (id, category),
       material,
       materials (id, name),
       delivey_days,

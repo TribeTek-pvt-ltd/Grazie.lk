@@ -32,12 +32,11 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 bg-soft/90 backdrop-blur-md border-b border-gold/10 shadow-sm">
       <nav className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-5 flex items-center justify-between">
         {/* Brand */}
-        <Link
-          href="/"
-          className="text-3xl font-heading font-semibold text-gold tracking-wider hover:opacity-80 transition"
+        <span
+          className="text-3xl font-heading font-semibold text-gold tracking-wider "
         >
           Grazie.lk
-        </Link>
+        </span>
 
         {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-10 text-dark/80 font-medium">
@@ -51,7 +50,7 @@ export default function Navbar() {
             href="/products"
             className="relative hover:text-gold transition after:absolute after:bottom-[-6px] after:left-0 after:w-0 after:h-px after:bg-gold after:transition-all after:duration-300 hover:after:w-full"
           >
-            products
+            Products
           </Link>
           {/* <Link
             href="/contact"
@@ -128,14 +127,14 @@ export default function Navbar() {
                   </Link>
 
                   <Link
-                    href="/products"
+                    href="/"
                     onClick={() => setIsOpen(false)}
                     className="text-2xl font-heading font-medium text-dark hover:text-gold transition duration-300"
                   >
                     Home
                   </Link>
                   <Link
-                    href="/"
+                    href="/products"
                     onClick={() => setIsOpen(false)}
                     className="text-2xl font-heading font-medium text-dark hover:text-gold transition duration-300"
                   >
